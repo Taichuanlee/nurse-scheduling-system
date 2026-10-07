@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>四週期護理排班預假 V0.3</title>
+<title>四週期護理排班預假 V0.4</title>
 
 <style>
 :root{
@@ -13,7 +13,6 @@
 }
 
 *{box-sizing:border-box}
-
 body{margin:0}
 
 .wrap{
@@ -45,13 +44,9 @@ h1,h2,h3,p{margin-top:0}
   flex-wrap:wrap;
 }
 
-.between{
-  justify-content:space-between;
-}
+.between{justify-content:space-between}
 
-button,select,input,textarea{
-  font:inherit;
-}
+button,select,input,textarea{font:inherit}
 
 button{
   border:0;
@@ -67,9 +62,7 @@ button{
   color:#fff;
 }
 
-.danger{
-  color:#b42318;
-}
+.danger{color:#b42318}
 
 .ghost{
   background:#fff;
@@ -81,17 +74,103 @@ button{
   font-size:13px;
 }
 
+.hidden{display:none!important}
+
+/* ===== 狀態 ===== */
+
 .status{
+  display:inline-block;
   padding:5px 9px;
   border-radius:999px;
   background:#e9f8ee;
   color:#16763a;
   font-size:13px;
+  font-weight:600;
+}
+
+.summary-top{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+}
+
+.summary-deadline{
+  margin-top:8px;
+}
+
+.point-summary{
+  margin-top:16px;
+  padding:14px;
+  border-radius:14px;
+  background:#f7f9fc;
+}
+
+.point-summary-label{
+  font-size:12px;
+  color:#667085;
+  margin-bottom:3px;
+}
+
+.point-line{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
 }
 
 .points{
   font-size:28px;
-  font-weight:700;
+  font-weight:750;
+}
+
+.remaining{
+  color:#667085;
+  font-size:13px;
+}
+
+.shift-section{
+  margin-top:14px;
+}
+
+.shift-section-title{
+  font-size:12px;
+  color:#667085;
+  margin-bottom:7px;
+}
+
+.shift-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.shift-badge{
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:650;
+  border:1px solid #d8dee9;
+}
+
+.shift-badge.A{
+  background:#eaf4ff;
+  border-color:#91c4f2;
+}
+
+.shift-badge.E{
+  background:#fff3dc;
+  border-color:#e9bd69;
+}
+
+.shift-badge.N{
+  background:#eeeafd;
+  border-color:#aaa0dc;
+}
+
+.shift-badge.U{
+  background:#f0f1f3;
+  border-color:#c4c8cf;
+  color:#667085;
 }
 
 /* ===== 月曆 ===== */
@@ -120,15 +199,12 @@ button{
   transition:.15s;
 }
 
-.day:hover{
-  border-color:#8db7ef;
-}
+.day:hover{border-color:#8db7ef}
 
 .day.requested{
   border-width:2px;
 }
 
-/* Prototype 班別顏色 */
 .day.shift-A{
   background:#eaf4ff;
   border-color:#91c4f2;
@@ -149,15 +225,15 @@ button{
   border-color:#b9bec7;
 }
 
-.day .num{
-  font-weight:700;
-}
-
 .day .month{
   display:block;
   font-size:10px;
   color:#98a2b3;
   margin-bottom:1px;
+}
+
+.day .num{
+  font-weight:700;
 }
 
 .shift-label{
@@ -168,11 +244,10 @@ button{
   color:#475467;
 }
 
-/* 自己的預假點數 */
 .tag{
   display:inline-block;
   font-size:12px;
-  font-weight:700;
+  font-weight:750;
   margin-top:6px;
   padding:3px 6px;
   border-radius:7px;
@@ -181,7 +256,7 @@ button{
 
 .tag.special{
   background:#f4eefe;
-  font-weight:600;
+  font-weight:650;
 }
 
 .request-count{
@@ -196,16 +271,64 @@ button{
   margin-top:4px;
 }
 
+.legend{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  color:#667085;
+}
+
+.legend-color{
+  width:12px;
+  height:12px;
+  border-radius:4px;
+  border:1px solid #ccc;
+}
+
+.legend-A{background:#eaf4ff}
+.legend-E{background:#fff3dc}
+.legend-N{background:#eeeafd}
+.legend-U{background:#f0f1f3}
+
 /* ===== 我的預假 ===== */
+
+.my-tabs{
+  display:flex;
+  background:#f1f4f8;
+  border-radius:12px;
+  padding:4px;
+  gap:4px;
+  margin-bottom:12px;
+}
+
+.my-tab{
+  flex:1;
+  background:transparent;
+  padding:9px 10px;
+  font-size:13px;
+}
+
+.my-tab.active{
+  background:#fff;
+  color:#1769e0;
+  font-weight:700;
+  box-shadow:0 1px 5px #00000012;
+}
 
 .request{
   padding:12px 0;
   border-top:1px solid #edf0f4;
 }
 
-.request:first-child{
-  border-top:0;
-}
+.request:first-child{border-top:0}
 
 .request-title{
   font-weight:700;
@@ -217,7 +340,45 @@ button{
   margin-top:4px;
 }
 
-/* ===== Tabs ===== */
+.cycle-group{
+  margin-top:15px;
+  border:1px solid #e5e9f0;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.cycle-group:first-child{
+  margin-top:0;
+}
+
+.cycle-group-head{
+  padding:10px 12px;
+  background:#f7f9fc;
+  border-bottom:1px solid #e5e9f0;
+}
+
+.cycle-group-title{
+  font-size:13px;
+  font-weight:700;
+}
+
+.cycle-group-meta{
+  font-size:11px;
+  color:#667085;
+  margin-top:2px;
+}
+
+.cycle-group-body{
+  padding:0 12px;
+}
+
+.empty{
+  padding:20px;
+  text-align:center;
+  color:#98a2b3;
+}
+
+/* ===== Tabs / 點數 ===== */
 
 .tabs{
   display:flex;
@@ -227,10 +388,8 @@ button{
 
 .tab.active{
   background:#1769e0;
-  color:white;
+  color:#fff;
 }
-
-/* ===== 點數 ===== */
 
 .point-grid{
   display:grid;
@@ -288,12 +447,10 @@ button{
   z-index:20;
 }
 
-.modal.show{
-  display:flex;
-}
+.modal.show{display:flex}
 
 .sheet{
-  background:white;
+  background:#fff;
   width:min(760px,100%);
   max-height:90vh;
   overflow:auto;
@@ -306,70 +463,31 @@ button{
   margin:8vh auto;
 }
 
-.hidden{
-  display:none!important;
-}
-
 .cycle-nav select{
   flex:1;
   min-width:230px;
 }
 
-.empty{
-  padding:18px;
-  text-align:center;
-  color:#98a2b3;
-}
-
-.info-btn{
-  white-space:nowrap;
-}
-
-/* ===== 班別圖例 ===== */
-
-.legend{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.legend-item{
-  display:flex;
-  align-items:center;
-  gap:5px;
-  font-size:11px;
-  color:#667085;
-}
-
-.legend-color{
-  width:12px;
-  height:12px;
-  border-radius:4px;
-  border:1px solid #ccc;
-}
-
-.legend-A{background:#eaf4ff}
-.legend-E{background:#fff3dc}
-.legend-N{background:#eeeafd}
-.legend-U{background:#f0f1f3}
-
-/* ===== 手機 ===== */
+.info-btn{white-space:nowrap}
 
 @media(max-width:560px){
 
-  .wrap{
-    padding:10px;
-  }
+  .wrap{padding:10px}
 
   .card{
     border-radius:15px;
     padding:13px;
   }
 
-  .calendar{
-    gap:4px;
+  .summary-top{
+    display:block;
   }
+
+  .point-summary{
+    margin-top:12px;
+  }
+
+  .calendar{gap:4px}
 
   .day{
     min-height:82px;
@@ -381,20 +499,17 @@ button{
     padding:2px 4px;
   }
 
-  .request-count{
-    font-size:9px;
-  }
+  .request-count{font-size:9px}
 
-  .cycle-nav button{
-    padding:9px;
-  }
+  .shift-label{font-size:9px}
 
-  .points{
-    font-size:24px;
-  }
+  .cycle-nav button{padding:9px}
 
-  .shift-label{
-    font-size:9px;
+  .points{font-size:25px}
+
+  .request-actions{
+    width:100%;
+    margin-top:6px;
   }
 }
 </style>
@@ -402,7 +517,7 @@ button{
 
 <body>
 
-<!-- ===== 登入 ===== -->
+<!-- 登入 -->
 
 <div id="loginView" class="wrap login">
 
@@ -411,37 +526,21 @@ button{
     <h1>護理排班預假</h1>
 
     <p class="muted">
-      四週期預假系統 V0.3
+      四週期預假系統 V0.4
     </p>
 
     <div class="field">
-
       <label>員工編號</label>
-
-      <input
-        id="employeeId"
-        placeholder="Prototype 可任意輸入">
-
+      <input id="employeeId" placeholder="Prototype 可任意輸入">
     </div>
 
     <div class="field">
-
       <label>PIN</label>
-
-      <input
-        id="pin"
-        type="password"
-        placeholder="Prototype 可任意輸入">
-
+      <input id="pin" type="password" placeholder="Prototype 可任意輸入">
     </div>
 
-    <button
-      class="primary"
-      style="width:100%"
-      onclick="login()">
-
+    <button class="primary" style="width:100%" onclick="login()">
       登入
-
     </button>
 
   </div>
@@ -449,40 +548,27 @@ button{
 </div>
 
 
-<!-- ===== APP ===== -->
+<!-- APP -->
 
 <div id="appView" class="hidden">
 
 <div class="wrap">
 
-  <div
-    class="row between"
-    style="margin-bottom:12px">
+  <div class="row between" style="margin-bottom:12px">
 
     <div>
-
-      <strong>
-        Hi，王小明 👋
-      </strong>
-
-      <div class="muted">
-        四週期護理排班預假
-      </div>
-
+      <strong>Hi，王小明 👋</strong>
+      <div class="muted">四週期護理排班預假</div>
     </div>
 
-    <button
-      class="ghost small"
-      onclick="logout()">
-
+    <button class="ghost small" onclick="logout()">
       登出
-
     </button>
 
   </div>
 
 
-  <!-- ===== 四週期 ===== -->
+  <!-- 四週期選擇 -->
 
   <div class="card">
 
@@ -494,32 +580,20 @@ button{
           目前查看
         </div>
 
-        <h2
-          id="cycleTitle"
-          style="margin:3px 0">
-        </h2>
+        <h2 id="cycleTitle" style="margin:3px 0"></h2>
 
-        <div
-          id="cycleRange"
-          class="muted">
-        </div>
+        <div id="cycleRange" class="muted"></div>
 
       </div>
 
-      <button
-        class="ghost info-btn"
-        onclick="openInfo()">
-
+      <button class="ghost info-btn" onclick="openInfo()">
         ⓘ 填寫說明
-
       </button>
 
     </div>
 
 
-    <div
-      class="row cycle-nav"
-      style="margin-top:14px">
+    <div class="row cycle-nav" style="margin-top:14px">
 
       <button onclick="moveCycle(-1)">
         ←
@@ -534,12 +608,8 @@ button{
         →
       </button>
 
-      <button
-        class="ghost small"
-        onclick="goCurrent()">
-
+      <button class="ghost small" onclick="goCurrent()">
         目前週期
-
       </button>
 
     </div>
@@ -547,11 +617,11 @@ button{
   </div>
 
 
-  <!-- ===== 點數 ===== -->
+  <!-- 狀態 / 點數 / 班別 -->
 
   <div class="card">
 
-    <div class="row between">
+    <div class="summary-top">
 
       <div>
 
@@ -560,48 +630,35 @@ button{
         </span>
 
         <div
-          class="muted"
           id="deadline"
-          style="margin-top:8px">
-        </div>
-
-        <div
-          id="currentShiftInfo"
-          class="muted"
-          style="margin-top:6px">
+          class="muted summary-deadline">
         </div>
 
       </div>
 
+    </div>
 
-      <div style="text-align:right">
 
-        <div class="muted">
-          已使用 / 本週期額度
-        </div>
+    <div class="point-summary">
+
+      <div class="point-summary-label">
+        本週期點數
+      </div>
+
+      <div class="point-line">
 
         <div class="points">
 
-          <span id="usedPoints">
-            0
-          </span>
-
+          <span id="usedPoints">0</span>
           /
-
-          <span id="limitPoints">
-            9
-          </span>
+          <span id="limitPoints">9</span>
 
         </div>
 
-        <div class="muted">
+        <div class="remaining">
 
           剩餘
-
-          <span id="remainingPoints">
-            9
-          </span>
-
+          <strong id="remainingPoints">9</strong>
           點
 
         </div>
@@ -610,10 +667,24 @@ button{
 
     </div>
 
+
+    <div class="shift-section">
+
+      <div class="shift-section-title">
+        本週期班別
+      </div>
+
+      <div
+        id="shiftBadges"
+        class="shift-badges">
+      </div>
+
+    </div>
+
   </div>
 
 
-  <!-- ===== 月曆 ===== -->
+  <!-- 月曆 -->
 
   <div class="card">
 
@@ -654,38 +725,64 @@ button{
   </div>
 
 
-  <!-- ===== 我的預假 ===== -->
+  <!-- 我的預假 -->
 
   <div class="card">
 
     <div class="row between">
 
-      <h3>
-        本週期我的預假
+      <h3 style="margin-bottom:10px">
+        我的預假
       </h3>
 
       <span
         id="submissionBadge"
         class="muted">
-
         草稿
-
       </span>
 
     </div>
 
-    <div id="requestList">
+
+    <div class="my-tabs">
+
+      <button
+        id="currentRequestsTab"
+        class="my-tab active"
+        onclick="setRequestView('current')">
+
+        本週期
+
+      </button>
+
+      <button
+        id="futureRequestsTab"
+        class="my-tab"
+        onclick="setRequestView('future')">
+
+        未來預假
+
+      </button>
+
     </div>
 
-    <button
-      id="confirmBtn"
-      class="primary"
-      style="width:100%;margin-top:12px"
-      onclick="confirmSubmission()">
 
-      確認並送出預假
+    <div id="requestList"></div>
 
-    </button>
+
+    <div id="confirmArea">
+
+      <button
+        id="confirmBtn"
+        class="primary"
+        style="width:100%;margin-top:12px"
+        onclick="confirmSubmission()">
+
+        確認並送出預假
+
+      </button>
+
+    </div>
 
   </div>
 
@@ -694,11 +791,9 @@ button{
 </div>
 
 
-<!-- ===== 預假編輯 ===== -->
+<!-- 編輯預假 -->
 
-<div
-  id="editModal"
-  class="modal">
+<div id="editModal" class="modal">
 
 <div class="sheet">
 
@@ -711,9 +806,7 @@ button{
     <button
       class="ghost small"
       onclick="closeModal('editModal')">
-
       關閉
-
     </button>
 
   </div>
@@ -725,18 +818,14 @@ button{
       id="generalTab"
       class="tab active"
       onclick="setTab('general')">
-
       一般預假
-
     </button>
 
     <button
       id="specialTab"
       class="tab"
       onclick="setTab('special')">
-
       特殊預假
-
     </button>
 
   </div>
@@ -782,17 +871,13 @@ button{
       <button
         class="primary"
         onclick="saveGeneral()">
-
         儲存
-
       </button>
 
       <button
         class="ghost danger"
         onclick="deleteCurrent()">
-
         刪除此日預假
-
       </button>
 
     </div>
@@ -802,9 +887,7 @@ button{
 
   <!-- 特殊預假 -->
 
-  <div
-    id="specialPane"
-    class="hidden">
+  <div id="specialPane" class="hidden">
 
     <div class="field">
 
@@ -813,12 +896,10 @@ button{
       </label>
 
       <select id="specialType">
-
         <option>年休週</option>
         <option>婚假</option>
         <option>公假</option>
         <option>其他</option>
-
       </select>
 
     </div>
@@ -845,8 +926,7 @@ button{
 
       <textarea
         id="specialNote"
-        maxlength="200">
-      </textarea>
+        maxlength="200"></textarea>
 
     </div>
 
@@ -862,24 +942,18 @@ button{
     </label>
 
 
-    <div
-      class="row"
-      style="margin-top:14px">
+    <div class="row" style="margin-top:14px">
 
       <button
         class="primary"
         onclick="saveSpecial()">
-
         儲存特殊預假
-
       </button>
 
       <button
         class="ghost danger"
         onclick="deleteCurrent()">
-
         刪除
-
       </button>
 
     </div>
@@ -891,11 +965,9 @@ button{
 </div>
 
 
-<!-- ===== 填寫說明 ===== -->
+<!-- 填寫說明 -->
 
-<div
-  id="infoModal"
-  class="modal">
+<div id="infoModal" class="modal">
 
 <div class="sheet">
 
@@ -908,108 +980,59 @@ button{
     <button
       class="ghost small"
       onclick="closeModal('infoModal')">
-
       關閉
-
     </button>
 
   </div>
 
 
   <p>
-
-    <strong>
-      一般預假
-    </strong>
-
-    <br>
-
-    每個四週期都有獨立點數額度，
-    預設為 9 點；
+    <strong>一般預假</strong><br>
+    每個四週期都有獨立點數額度，預設為 9 點；
     實際額度依該週期設定為準。
-
-    點數越高，
-    代表該日期對你的重要程度越高。
-
+    點數越高，代表該日期對你的重要程度越高。
   </p>
 
 
   <p>
-
-    <strong>
-      0 點預假
-    </strong>
-
-    <br>
-
-    代表希望該日休假，
-    但不投入優先點數。
-
+    <strong>0 點預假</strong><br>
+    代表希望該日休假，但不投入優先點數。
   </p>
 
 
   <p>
-
-    <strong>
-      班別
-    </strong>
-
-    <br>
-
+    <strong>班別</strong><br>
     A、E、N 班別依月份設定。
-
-    同一個四週期若跨越月份，
-    可能同時出現不同班別。
-
-    尚未設定班別的未來月份，
-    會顯示為班別未定。
-
+    同一個四週期若跨越月份，可能同時出現不同班別。
+    尚未設定班別的未來月份會顯示為「未定」。
   </p>
 
 
   <p>
-
-    <strong>
-      特殊預假
-    </strong>
-
-    <br>
-
+    <strong>特殊預假</strong><br>
     包含年休週、婚假、公假及其他特殊假別。
-
   </p>
 
 
   <p>
-
-    <strong>
-      備註
-    </strong>
-
-    <br>
-
+    <strong>備註</strong><br>
     可填寫規劃原因供自己與排班人員參考。
-
-    備註不會顯示在月曆格內，
-    也不會公開給其他一般同仁。
-
+    備註不會顯示在月曆格內，也不會公開給其他一般同仁。
   </p>
 
 
   <p>
+    <strong>未來預假</strong><br>
+    可查看所有未來已填寫的預假，
+    並可直接修改或刪除，不必先切換到該四週期。
+  </p>
 
-    <strong>
-      修改
-    </strong>
 
-    <br>
-
+  <p>
+    <strong>修改</strong><br>
     週期開放期間可修改或刪除。
-
     若已確認送出後再次修改，
-    狀態會回到「草稿」，
-    需要再次確認送出。
-
+    狀態會回到「草稿」，需要再次確認送出。
   </p>
 
 
@@ -1039,11 +1062,11 @@ function localKey(d){
 
   const m=
     String(d.getMonth()+1)
-    .padStart(2,'0');
+    .padStart(2,"0");
 
   const day=
     String(d.getDate())
-    .padStart(2,'0');
+    .padStart(2,"0");
 
   return `${y}-${m}-${day}`;
 }
@@ -1052,20 +1075,15 @@ function localKey(d){
 function parseKey(k){
 
   const [y,m,d]=
-    k.split('-').map(Number);
+    k.split("-").map(Number);
 
-  return new Date(
-    y,
-    m-1,
-    d
-  );
+  return new Date(y,m-1,d);
 }
 
 
 function addDays(d,n){
 
-  const x=
-    new Date(d);
+  const x=new Date(d);
 
   x.setDate(
     x.getDate()+n
@@ -1083,8 +1101,7 @@ function fmt(d){
 
 function monthKey(date){
 
-  const y=
-    date.getFullYear();
+  const y=date.getFullYear();
 
   const m=
     String(date.getMonth()+1)
@@ -1099,37 +1116,21 @@ function monthKey(date){
 ========================================================= */
 
 /*
-  true：
-  護理師看得到每天有多少人預假
-
-  false：
-  完全不顯示人數
-
-  未來這個會由 Admin 後台設定
+ true  = 顯示每日預假人數
+ false = 不顯示
 */
 
 const showRequestCount=true;
 
 
 /* =========================================================
-   Prototype 每月班別假資料
+   Prototype 每月班別
 ========================================================= */
-
-/*
-  重要：
-  班別是依「月份」，
-  不是依四週期。
-
-  所以同一四週期跨月份時，
-  可能出現兩個不同班別。
-*/
 
 const monthlyShifts={
 
   "2026-11":"A",
-
   "2026-12":"E",
-
   "2027-01":"N"
 
 };
@@ -1144,21 +1145,16 @@ function getShift(date){
 
 
 /* =========================================================
-   Prototype 每日總預假人數假資料
+   Prototype 每日預假人數
 ========================================================= */
 
 const requestCounts={
 
   "2026-11-24":8,
-
   "2026-11-25":3,
-
   "2026-11-26":6,
-
   "2026-12-05":12,
-
   "2026-12-15":7,
-
   "2027-01-03":10
 
 };
@@ -1175,26 +1171,13 @@ function getRequestCount(key){
 ========================================================= */
 
 const baseStart=
-  new Date(
-    2026,
-    10,
-    23
-  );
+  new Date(2026,10,23);
 
 
 const cycles=[];
 
 
-/*
-  Prototype 自動產生
-  前後多個四週期
-*/
-
-for(
-  let i=-13;
-  i<40;
-  i++
-){
+for(let i=-13;i<40;i++){
 
   const start=
     addDays(
@@ -1217,11 +1200,11 @@ for(
     end:end,
 
     /*
+      Prototype：
       預設 9 點。
 
-      故意讓其中一個週期
-      變成 12 點，
-      測試不同週期點數。
+      故意讓其中一個未來週期 12 點，
+      測試每週期不同額度。
     */
     pointLimit:
       i===3
@@ -1241,11 +1224,6 @@ for(
 }
 
 
-/*
-  baseStart 那一個週期
-  在 cycles 陣列中的位置
-*/
-
 let currentIndex=13;
 
 
@@ -1261,7 +1239,11 @@ let selectedDate=null;
 
 let selectedPoints=0;
 
+let selectedCycleIndex=null;
+
 let activeTab="general";
+
+let requestView="current";
 
 
 /* =========================================================
@@ -1271,43 +1253,33 @@ let activeTab="general";
 function login(){
 
   document
-    .getElementById(
-      "loginView"
-    )
+    .getElementById("loginView")
     .classList
     .add("hidden");
 
 
   document
-    .getElementById(
-      "appView"
-    )
+    .getElementById("appView")
     .classList
     .remove("hidden");
 
 
   renderAll();
-
 }
 
 
 function logout(){
 
   document
-    .getElementById(
-      "appView"
-    )
+    .getElementById("appView")
     .classList
     .add("hidden");
 
 
   document
-    .getElementById(
-      "loginView"
-    )
+    .getElementById("loginView")
     .classList
     .remove("hidden");
-
 }
 
 
@@ -1317,59 +1289,71 @@ function logout(){
 
 function cycle(){
 
-  return cycles[
-    currentIndex
-  ];
+  return cycles[currentIndex];
+}
 
+
+function cycleKeyByIndex(index){
+
+  return localKey(
+    cycles[index].start
+  );
 }
 
 
 function cycleKey(){
 
-  return localKey(
-    cycle().start
+  return cycleKeyByIndex(
+    currentIndex
   );
+}
 
+
+function getRequestsForCycle(index){
+
+  const key=
+    cycleKeyByIndex(index);
+
+
+  if(!requests[key]){
+
+    requests[key]={};
+  }
+
+
+  return requests[key];
 }
 
 
 function reqs(){
 
-  if(
-    !requests[
-      cycleKey()
-    ]
-  ){
+  return getRequestsForCycle(
+    currentIndex
+  );
+}
 
-    requests[
-      cycleKey()
-    ]={};
 
-  }
+function usedForCycle(index){
 
-  return requests[
-    cycleKey()
-  ];
-
+  return Object
+    .values(
+      getRequestsForCycle(index)
+    )
+    .filter(
+      r=>r.type==="general"
+    )
+    .reduce(
+      (sum,r)=>sum+r.points,
+      0
+    );
 }
 
 
 function used(){
 
-  return Object
-    .values(
-      reqs()
-    )
-    .filter(
-      r=>
-        r.type==="general"
-    )
-    .reduce(
-      (sum,r)=>
-        sum+r.points,
-      0
-    );
-
+  return usedForCycle(
+    currentIndex
+  );
 }
 
 
@@ -1385,8 +1369,7 @@ function renderAll(){
 
   renderCalendar();
 
-  renderList();
-
+  renderRequestArea();
 }
 
 
@@ -1397,8 +1380,7 @@ function renderAll(){
 function renderCycleSelect(){
 
   const select=
-    document
-    .getElementById(
+    document.getElementById(
       "cycleSelect"
     );
 
@@ -1406,35 +1388,31 @@ function renderCycleSelect(){
   select.innerHTML=
     cycles
     .map(
-      (c,i)=>{
+      (c,i)=>`
 
-        return `
-          <option
-            value="${i}"
-            ${
-              i===currentIndex
-              ? "selected"
-              : ""
-            }>
+        <option
+          value="${i}"
+          ${
+            i===currentIndex
+            ? "selected"
+            : ""
+          }>
 
-            ${fmt(c.start)}
-            ～
-            ${fmt(c.end)}
+          ${fmt(c.start)}
+          ～
+          ${fmt(c.end)}
 
-          </option>
-        `;
+        </option>
 
-      }
+      `
     )
     .join("");
-
 }
 
 
 function renderSummary(){
 
-  const c=
-    cycle();
+  const c=cycle();
 
 
   document
@@ -1485,54 +1463,7 @@ function renderSummary(){
       c.pointLimit-used();
 
 
-  /*
-    顯示這個四週期
-    涉及哪些月份班別
-  */
-
-  const shifts=[];
-
-  for(
-    let i=0;
-    i<28;
-    i++
-  ){
-
-    const date=
-      addDays(
-        c.start,
-        i
-      );
-
-    const mk=
-      monthKey(date);
-
-    const shift=
-      getShift(date);
-
-    const label=
-      shift
-      ? `${mk.replace("-","/")}：${shift}`
-      : `${mk.replace("-","/")}：未定`;
-
-
-    if(
-      !shifts.includes(label)
-    ){
-
-      shifts.push(label);
-
-    }
-
-  }
-
-
-  document
-    .getElementById(
-      "currentShiftInfo"
-    )
-    .textContent=
-      `班別：${shifts.join("　")}`;
+  renderShiftBadges();
 
 
   const confirmed=
@@ -1559,9 +1490,82 @@ function renderSummary(){
       confirmed
       ? "✓ 已確認送出"
       : "確認並送出預假";
-
 }
 
+
+/* =========================================================
+   班別 Badge
+========================================================= */
+
+function renderShiftBadges(){
+
+  const box=
+    document.getElementById(
+      "shiftBadges"
+    );
+
+
+  const months={};
+
+
+  for(let i=0;i<28;i++){
+
+    const date=
+      addDays(
+        cycle().start,
+        i
+      );
+
+
+    const mk=
+      monthKey(date);
+
+
+    if(!(mk in months)){
+
+      months[mk]=
+        getShift(date);
+    }
+  }
+
+
+  box.innerHTML=
+    Object
+    .entries(months)
+    .map(
+      ([mk,shift])=>{
+
+        const [year,month]=
+          mk.split("-");
+
+
+        const label=
+          shift
+          ? `${Number(month)}月 · ${shift}`
+          : `${Number(month)}月 · 未定`;
+
+
+        const cls=
+          shift || "U";
+
+
+        return `
+          <span
+            class="shift-badge ${cls}">
+
+            ${label}
+
+          </span>
+        `;
+      }
+    )
+    .join("");
+}
+
+
+/* =========================================================
+   切換週期
+========================================================= */
 
 function moveCycle(n){
 
@@ -1575,6 +1579,8 @@ function moveCycle(n){
     );
 
 
+  requestView="current";
+
   renderAll();
 
 
@@ -1582,7 +1588,6 @@ function moveCycle(n){
     top:0,
     behavior:"smooth"
   });
-
 }
 
 
@@ -1591,8 +1596,9 @@ function selectCycle(value){
   currentIndex=
     Number(value);
 
-  renderAll();
+  requestView="current";
 
+  renderAll();
 }
 
 
@@ -1600,8 +1606,9 @@ function goCurrent(){
 
   currentIndex=13;
 
-  renderAll();
+  requestView="current";
 
+  renderAll();
 }
 
 
@@ -1612,8 +1619,7 @@ function goCurrent(){
 function renderCalendar(){
 
   const calendar=
-    document
-    .getElementById(
+    document.getElementById(
       "calendar"
     );
 
@@ -1635,15 +1641,10 @@ function renderCalendar(){
     .join("");
 
 
-  const data=
-    reqs();
+  const data=reqs();
 
 
-  for(
-    let i=0;
-    i<28;
-    i++
-  ){
+  for(let i=0;i<28;i++){
 
     const date=
       addDays(
@@ -1665,59 +1666,45 @@ function renderCalendar(){
 
 
     const cell=
-      document
-      .createElement(
+      document.createElement(
         "div"
       );
 
 
-    cell.className=
-      "day";
+    cell.className="day";
 
 
     /*
-      只有「我有預假」
-      才整格變色。
+      只有自己有預假時才變色
     */
 
     if(request){
 
-      cell.classList
-        .add(
-          "requested"
-        );
+      cell.classList.add(
+        "requested"
+      );
 
 
       if(shift){
 
-        cell.classList
-          .add(
-            `shift-${shift}`
-          );
+        cell.classList.add(
+          `shift-${shift}`
+        );
 
       }else{
 
-        cell.classList
-          .add(
-            "shift-unknown"
-          );
-
+        cell.classList.add(
+          "shift-unknown"
+        );
       }
-
     }
 
-
-    /*
-      自己的預假
-    */
 
     let tag="";
 
 
     if(
-      request?.type
-      ===
-      "general"
+      request?.type==="general"
     ){
 
       tag=`
@@ -1725,14 +1712,11 @@ function renderCalendar(){
           ${request.points}⭐
         </div>
       `;
-
     }
 
 
     if(
-      request?.type
-      ===
-      "special"
+      request?.type==="special"
     ){
 
       tag=`
@@ -1742,13 +1726,8 @@ function renderCalendar(){
           )}
         </div>
       `;
-
     }
 
-
-    /*
-      每日總預假人數
-    */
 
     let countTag="";
 
@@ -1756,9 +1735,7 @@ function renderCalendar(){
     if(showRequestCount){
 
       const count=
-        getRequestCount(
-          key
-        );
+        getRequestCount(key);
 
 
       if(count>0){
@@ -1768,29 +1745,20 @@ function renderCalendar(){
             👥 ${count}
           </div>
         `;
-
       }
-
     }
 
-
-    /*
-      特殊日期 Prototype
-    */
 
     let specialDate="";
 
 
-    if(
-      key==="2026-12-15"
-    ){
+    if(key==="2026-12-15"){
 
       specialDate=`
         <div class="special-note">
           ● 教育訓練
         </div>
       `;
-
     }
 
 
@@ -1800,11 +1768,9 @@ function renderCalendar(){
         ${date.getMonth()+1}月
       </span>
 
-
       <span class="num">
         ${date.getDate()}
       </span>
-
 
       ${
         shift
@@ -1816,39 +1782,94 @@ function renderCalendar(){
         : ""
       }
 
-
       ${tag}
 
       ${countTag}
 
       ${specialDate}
-
     `;
 
 
     cell.onclick=
-      ()=>openEdit(key);
-
-
-    calendar
-      .appendChild(
-        cell
+      ()=>openEdit(
+        key,
+        currentIndex
       );
 
-  }
 
+    calendar.appendChild(
+      cell
+    );
+  }
 }
 
 
 /* =========================================================
-   我的預假
+   我的預假 Tabs
 ========================================================= */
 
-function renderList(){
+function setRequestView(view){
+
+  requestView=view;
+
+  renderRequestArea();
+}
+
+
+function renderRequestArea(){
+
+  document
+    .getElementById(
+      "currentRequestsTab"
+    )
+    .classList
+    .toggle(
+      "active",
+      requestView==="current"
+    );
+
+
+  document
+    .getElementById(
+      "futureRequestsTab"
+    )
+    .classList
+    .toggle(
+      "active",
+      requestView==="future"
+    );
+
+
+  document
+    .getElementById(
+      "confirmArea"
+    )
+    .classList
+    .toggle(
+      "hidden",
+      requestView!=="current"
+    );
+
+
+  if(requestView==="current"){
+
+    renderCurrentList();
+
+  }else{
+
+    renderFutureList();
+  }
+}
+
+
+/* =========================================================
+   本週期預假
+========================================================= */
+
+function renderCurrentList(){
 
   const box=
-    document
-    .getElementById(
+    document.getElementById(
       "requestList"
     );
 
@@ -1864,9 +1885,7 @@ function renderList(){
     );
 
 
-  if(
-    !entries.length
-  ){
+  if(!entries.length){
 
     box.innerHTML=`
       <div class="empty">
@@ -1875,125 +1894,285 @@ function renderList(){
     `;
 
     return;
-
   }
 
 
   box.innerHTML=
     entries
     .map(
-      ([key,r])=>{
-
-        const date=
-          parseKey(key);
-
-
-        const shift=
-          getShift(date);
-
-
-        const shiftText=
-          shift
-          ? `${shift}班`
-          : "班別未定";
+      ([key,r])=>
+        requestRow(
+          key,
+          r,
+          currentIndex
+        )
+    )
+    .join("");
+}
 
 
-        const title=
-          r.type==="general"
-          ? `一般預假 · ${r.points} 點`
-          : escapeHtml(
-              r.specialType
-            );
+/* =========================================================
+   未來所有預假
+========================================================= */
+
+function renderFutureList(){
+
+  const box=
+    document.getElementById(
+      "requestList"
+    );
 
 
-        const note=
-          r.note
-          ? `
-            <div class="note">
-              備註：
-              ${escapeHtml(r.note)}
-            </div>
-          `
-          : "";
+  const today=
+    new Date();
+
+  today.setHours(
+    0,0,0,0
+  );
+
+
+  const groups=[];
+
+
+  cycles.forEach(
+    (c,index)=>{
+
+      const data=
+        getRequestsForCycle(
+          index
+        );
+
+
+      const entries=
+        Object
+        .entries(data)
+        .filter(
+          ([key])=>
+            parseKey(key)>=today
+        )
+        .sort(
+          ([a],[b])=>
+            a.localeCompare(b)
+        );
+
+
+      if(entries.length){
+
+        groups.push({
+          cycle:c,
+          index:index,
+          entries:entries
+        });
+      }
+    }
+  );
+
+
+  if(!groups.length){
+
+    box.innerHTML=`
+      <div class="empty">
+        目前沒有未來預假
+      </div>
+    `;
+
+    return;
+  }
+
+
+  box.innerHTML=
+    groups
+    .map(
+      group=>{
+
+        const usedPoints=
+          usedForCycle(
+            group.index
+          );
 
 
         return `
 
-          <div class="request">
+          <div class="cycle-group">
 
-            <div class="row between">
+            <div class="cycle-group-head">
 
-              <div>
+              <div class="cycle-group-title">
 
-                <div class="request-title">
-
-                  ${fmt(date)}
-
-                  　
-
-                  ${title}
-
-                </div>
-
-
-                <div class="note">
-
-                  ${shiftText}
-
-                </div>
-
-
-                ${note}
+                ${fmt(group.cycle.start)}
+                ～
+                ${fmt(group.cycle.end)}
 
               </div>
 
+              <div class="cycle-group-meta">
 
-              <div class="row">
-
-                <button
-                  class="ghost small"
-                  onclick="openEdit('${key}')">
-
-                  修改
-
-                </button>
-
-
-                <button
-                  class="ghost small danger"
-                  onclick="deleteByKey('${key}')">
-
-                  刪除
-
-                </button>
+                已使用
+                ${usedPoints}
+                /
+                ${group.cycle.pointLimit}
+                點
 
               </div>
+
+            </div>
+
+
+            <div class="cycle-group-body">
+
+              ${
+                group.entries
+                .map(
+                  ([key,r])=>
+                    requestRow(
+                      key,
+                      r,
+                      group.index
+                    )
+                )
+                .join("")
+              }
 
             </div>
 
           </div>
 
         `;
-
       }
     )
     .join("");
-
 }
 
 
 /* =========================================================
-   編輯預假
+   單筆預假 UI
 ========================================================= */
 
-function openEdit(key){
+function requestRow(
+  key,
+  r,
+  cycleIndex
+){
 
-  selectedDate=
-    key;
+  const date=
+    parseKey(key);
+
+
+  const shift=
+    getShift(date);
+
+
+  const shiftText=
+    shift
+    ? `${shift}班`
+    : "班別未定";
+
+
+  const title=
+    r.type==="general"
+    ? `一般預假 · ${r.points} 點`
+    : escapeHtml(
+        r.specialType
+      );
+
+
+  const note=
+    r.note
+    ? `
+      <div class="note">
+        備註：
+        ${escapeHtml(r.note)}
+      </div>
+    `
+    : "";
+
+
+  return `
+
+    <div class="request">
+
+      <div class="row between">
+
+        <div>
+
+          <div class="request-title">
+
+            ${fmt(date)}
+            　
+            ${title}
+
+          </div>
+
+          <div class="note">
+            ${shiftText}
+          </div>
+
+          ${note}
+
+        </div>
+
+
+        <div class="row request-actions">
+
+          <button
+            class="ghost small"
+            onclick="
+              openEdit(
+                '${key}',
+                ${cycleIndex}
+              )
+            ">
+
+            修改
+
+          </button>
+
+
+          <button
+            class="ghost small danger"
+            onclick="
+              deleteByKey(
+                '${key}',
+                ${cycleIndex}
+              )
+            ">
+
+            刪除
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   開啟預假編輯
+========================================================= */
+
+function openEdit(
+  key,
+  cycleIndex=currentIndex
+){
+
+  selectedDate=key;
+
+  selectedCycleIndex=
+    cycleIndex;
+
+
+  const data=
+    getRequestsForCycle(
+      cycleIndex
+    );
 
 
   const request=
-    reqs()[key];
+    data[key];
 
 
   const date=
@@ -2026,8 +2205,7 @@ function openEdit(key){
     .getElementById(
       "specialEnd"
     )
-    .value=
-      key;
+    .value=key;
 
 
   document
@@ -2092,7 +2270,6 @@ function openEdit(key){
     )
     .classList
     .add("show");
-
 }
 
 
@@ -2102,10 +2279,14 @@ function openEdit(key){
 
 function renderPointGrid(){
 
+  const data=
+    getRequestsForCycle(
+      selectedCycleIndex
+    );
+
+
   const existing=
-    reqs()[
-      selectedDate
-    ];
+    data[selectedDate];
 
 
   const credit=
@@ -2114,17 +2295,24 @@ function renderPointGrid(){
     : 0;
 
 
+  const targetCycle=
+    cycles[
+      selectedCycleIndex
+    ];
+
+
   const max=
-    cycle().pointLimit
+    targetCycle.pointLimit
     -
-    used()
+    usedForCycle(
+      selectedCycleIndex
+    )
     +
     credit;
 
 
   const grid=
-    document
-    .getElementById(
+    document.getElementById(
       "pointGrid"
     );
 
@@ -2134,13 +2322,12 @@ function renderPointGrid(){
 
   for(
     let point=0;
-    point<=cycle().pointLimit;
+    point<=targetCycle.pointLimit;
     point++
   ){
 
     const button=
-      document
-      .createElement(
+      document.createElement(
         "button"
       );
 
@@ -2166,32 +2353,26 @@ function renderPointGrid(){
     button.onclick=
       ()=>{
 
-        selectedPoints=
-          point;
+        selectedPoints=point;
 
         renderPointGrid();
-
       };
 
 
-    grid
-      .appendChild(
-        button
-      );
-
+    grid.appendChild(
+      button
+    );
   }
-
 }
 
 
 /* =========================================================
-   一般 / 特殊 Tab
+   一般 / 特殊
 ========================================================= */
 
 function setTab(type){
 
-  activeTab=
-    type;
+  activeTab=type;
 
 
   document
@@ -2236,16 +2417,14 @@ function setTab(type){
       "active",
       type==="special"
     );
-
 }
 
 
-function markDraft(){
+function markDraft(index){
 
   submissions[
-    cycleKey()
+    cycleKeyByIndex(index)
   ]=false;
-
 }
 
 
@@ -2255,14 +2434,17 @@ function markDraft(){
 
 function saveGeneral(){
 
-  reqs()[
-    selectedDate
-  ]={
+  const data=
+    getRequestsForCycle(
+      selectedCycleIndex
+    );
+
+
+  data[selectedDate]={
 
     type:"general",
 
-    points:
-      selectedPoints,
+    points:selectedPoints,
 
     note:
       document
@@ -2275,7 +2457,9 @@ function saveGeneral(){
   };
 
 
-  markDraft();
+  markDraft(
+    selectedCycleIndex
+  );
 
 
   closeModal(
@@ -2284,7 +2468,6 @@ function saveGeneral(){
 
 
   renderAll();
-
 }
 
 
@@ -2313,7 +2496,6 @@ function saveSpecial(){
     );
 
     return;
-
   }
 
 
@@ -2342,6 +2524,18 @@ function saveSpecial(){
     .checked;
 
 
+  const targetCycle=
+    cycles[
+      selectedCycleIndex
+    ];
+
+
+  const data=
+    getRequestsForCycle(
+      selectedCycleIndex
+    );
+
+
   let date=
     parseKey(
       selectedDate
@@ -2352,26 +2546,19 @@ function saveSpecial(){
     parseKey(end);
 
 
-  while(
-    date<=last
-  ){
+  while(date<=last){
 
     const key=
       localKey(date);
 
 
-    /*
-      Prototype 目前只寫入
-      正在查看的四週期。
-    */
-
     if(
-      date>=cycle().start
+      date>=targetCycle.start
       &&
-      date<=cycle().end
+      date<=targetCycle.end
     ){
 
-      reqs()[key]={
+      data[key]={
 
         type:"special",
 
@@ -2388,7 +2575,6 @@ function saveSpecial(){
           end
 
       };
-
     }
 
 
@@ -2397,11 +2583,12 @@ function saveSpecial(){
         date,
         1
       );
-
   }
 
 
-  markDraft();
+  markDraft(
+    selectedCycleIndex
+  );
 
 
   closeModal(
@@ -2410,7 +2597,6 @@ function saveSpecial(){
 
 
   renderAll();
-
 }
 
 
@@ -2421,28 +2607,31 @@ function saveSpecial(){
 function deleteCurrent(){
 
   deleteByKey(
-    selectedDate
+    selectedDate,
+    selectedCycleIndex
   );
 
 
   closeModal(
     "editModal"
   );
-
 }
 
 
-function deleteByKey(key){
+function deleteByKey(
+  key,
+  cycleIndex=currentIndex
+){
+
+  const data=
+    getRequestsForCycle(
+      cycleIndex
+    );
+
 
   const request=
-    reqs()[key];
+    data[key];
 
-
-  /*
-    特殊預假：
-    刪除其中一天時，
-    Prototype 刪除整段。
-  */
 
   if(
     request?.type==="special"
@@ -2455,43 +2644,39 @@ function deleteByKey(key){
         dateKey,
         item
       ]
-      of
-      Object.entries(
-        reqs()
-      )
+      of Object.entries(data)
     ){
 
       if(
         item.type==="special"
         &&
         item.rangeStart
-          ===
+        ===
         request.rangeStart
         &&
         item.rangeEnd
-          ===
+        ===
         request.rangeEnd
       ){
 
-        delete reqs()[
+        delete data[
           dateKey
         ];
-
       }
-
     }
 
   }else{
 
-    delete reqs()[key];
-
+    delete data[key];
   }
 
 
-  markDraft();
+  markDraft(
+    cycleIndex
+  );
+
 
   renderAll();
-
 }
 
 
@@ -2513,7 +2698,6 @@ function confirmSubmission(){
     "已確認送出這個四週期的預假。\n\n"+
     "截止前若再次修改，會自動回到草稿。"
   );
-
 }
 
 
@@ -2529,7 +2713,6 @@ function openInfo(){
     )
     .classList
     .add("show");
-
 }
 
 
@@ -2539,7 +2722,6 @@ function closeModal(id){
     .getElementById(id)
     .classList
     .remove("show");
-
 }
 
 
@@ -2554,18 +2736,13 @@ function escapeHtml(text=""){
     char=>({
 
       "&":"&amp;",
-
       "<":"&lt;",
-
       ">":"&gt;",
-
       "'":"&#39;",
-
       '"':"&quot;"
 
     }[char])
   );
-
 }
 
 </script>
