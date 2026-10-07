@@ -1,0 +1,1385 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>護理排班管理後台 V0.1</title>
+
+<style>
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#18212f;
+  background:#f5f7fb;
+}
+
+*{box-sizing:border-box}
+body{margin:0}
+
+.wrap{
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid #e5e9f0;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 3px 14px #0000000a;
+}
+
+h1,h2,h3,p{margin-top:0}
+
+h1{
+  font-size:25px;
+  margin-bottom:4px;
+}
+
+h2{
+  font-size:20px;
+}
+
+h3{
+  font-size:16px;
+}
+
+.muted{
+  color:#667085;
+  font-size:13px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.between{
+  justify-content:space-between;
+}
+
+button,select{
+  font:inherit;
+}
+
+button{
+  border:0;
+  border-radius:11px;
+  padding:10px 14px;
+  cursor:pointer;
+  background:#e9eef7;
+  color:#172033;
+}
+
+.primary{
+  background:#1769e0;
+  color:#fff;
+}
+
+.ghost{
+  background:#fff;
+  border:1px solid #d8dee9;
+}
+
+.danger{
+  color:#b42318;
+}
+
+.small{
+  font-size:12px;
+  padding:7px 10px;
+}
+
+/* ===== Header ===== */
+
+.header{
+  margin-bottom:14px;
+}
+
+.role-badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#edf4ff;
+  color:#175cd3;
+  font-size:11px;
+  font-weight:700;
+  margin-top:5px;
+}
+
+/* ===== Cycle ===== */
+
+.cycle-select{
+  width:100%;
+  border:1px solid #d0d5dd;
+  border-radius:11px;
+  padding:10px;
+  background:#fff;
+  margin-top:10px;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.status.open{
+  background:#e9f8ee;
+  color:#16763a;
+}
+
+.status.locked{
+  background:#f2f4f7;
+  color:#667085;
+}
+
+/* ===== Statistics ===== */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:14px;
+}
+
+.stat{
+  padding:13px;
+  border-radius:13px;
+  background:#f7f9fc;
+  min-width:0;
+}
+
+.stat-number{
+  font-size:25px;
+  font-weight:750;
+}
+
+.stat-label{
+  font-size:11px;
+  color:#667085;
+  margin-top:2px;
+}
+
+.progress-wrap{
+  margin-top:16px;
+}
+
+.progress-head{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:7px;
+}
+
+.progress{
+  height:10px;
+  background:#e9edf3;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  background:#1769e0;
+  border-radius:999px;
+}
+
+/* ===== Settings ===== */
+
+.setting-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:11px 0;
+  border-top:1px solid #edf0f4;
+}
+
+.setting-row:first-of-type{
+  border-top:0;
+}
+
+.setting-label{
+  color:#667085;
+  font-size:13px;
+}
+
+.setting-value{
+  font-weight:650;
+  text-align:right;
+}
+
+/* ===== Leave overview ===== */
+
+.leave-row{
+  display:grid;
+  grid-template-columns:75px 1fr auto;
+  gap:10px;
+  align-items:center;
+  padding:11px 0;
+  border-top:1px solid #edf0f4;
+}
+
+.leave-row:first-of-type{
+  border-top:0;
+}
+
+.leave-date{
+  font-weight:700;
+}
+
+.leave-count{
+  font-size:13px;
+}
+
+.point-info{
+  font-size:11px;
+  color:#667085;
+  margin-top:2px;
+}
+
+.count-badge{
+  padding:5px 8px;
+  background:#f2f4f7;
+  border-radius:999px;
+  font-size:11px;
+  white-space:nowrap;
+}
+
+/* ===== Menu ===== */
+
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.menu-item{
+  background:#fff;
+  border:1px solid #dfe4ec;
+  border-radius:14px;
+  padding:15px;
+  text-align:left;
+  min-height:92px;
+}
+
+.menu-item:hover{
+  border-color:#91b9ef;
+}
+
+.menu-icon{
+  font-size:21px;
+  margin-bottom:7px;
+}
+
+.menu-title{
+  font-weight:700;
+}
+
+.menu-desc{
+  color:#667085;
+  font-size:11px;
+  margin-top:3px;
+}
+
+/* ===== Fake pages ===== */
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.back{
+  margin-bottom:14px;
+}
+
+.placeholder{
+  padding:30px 15px;
+  text-align:center;
+  color:#667085;
+}
+
+.placeholder-icon{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+/* ===== Responsive ===== */
+
+@media(max-width:560px){
+
+  .wrap{
+    padding:10px;
+  }
+
+  .card{
+    border-radius:15px;
+    padding:14px;
+  }
+
+  .stats{
+    gap:6px;
+  }
+
+  .stat{
+    padding:10px 8px;
+  }
+
+  .stat-number{
+    font-size:22px;
+  }
+
+  .menu-grid{
+    gap:7px;
+  }
+
+  .menu-item{
+    padding:12px;
+    min-height:90px;
+  }
+
+  .leave-row{
+    grid-template-columns:65px 1fr auto;
+    gap:7px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<!-- ======================================================
+     DASHBOARD
+====================================================== -->
+
+<div id="dashboardPage" class="page active">
+
+  <div class="header">
+
+    <div class="row between">
+
+      <div>
+
+        <h1>
+          排班管理後台
+        </h1>
+
+        <div class="muted">
+          Nurse Scheduling System
+        </div>
+
+        <span class="role-badge">
+          Scheduler
+        </span>
+
+      </div>
+
+      <button
+        class="ghost small"
+        onclick="fakeLogout()">
+
+        登出
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Current cycle -->
+
+  <div class="card">
+
+    <div class="row between">
+
+      <div>
+
+        <div class="muted">
+          目前管理週期
+        </div>
+
+        <h2
+          id="cycleTitle"
+          style="margin:4px 0">
+
+          2026/11/23 ～ 2026/12/20
+
+        </h2>
+
+      </div>
+
+      <span
+        id="cycleStatus"
+        class="status open">
+
+        ● 開放預假
+
+      </span>
+
+    </div>
+
+
+    <select
+      id="cycleSelect"
+      class="cycle-select"
+      onchange="changeCycle()">
+
+      <option value="0">
+        2026/11/23 ～ 2026/12/20
+      </option>
+
+      <option value="1">
+        2026/12/21 ～ 2027/01/17
+      </option>
+
+      <option value="2">
+        2027/01/18 ～ 2027/02/14
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- Completion -->
+
+  <div class="card">
+
+    <h3>
+      預假填寫狀況
+    </h3>
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <div
+          id="confirmedCount"
+          class="stat-number">
+
+          118
+
+        </div>
+
+        <div class="stat-label">
+          ✓ 已確認
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          id="draftCount"
+          class="stat-number">
+
+          21
+
+        </div>
+
+        <div class="stat-label">
+          ✎ 草稿
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          id="notStartedCount"
+          class="stat-number">
+
+          11
+
+        </div>
+
+        <div class="stat-label">
+          － 尚未填寫
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="progress-wrap">
+
+      <div class="progress-head">
+
+        <span>
+          確認完成率
+        </span>
+
+        <strong id="completionText">
+          78.7%
+        </strong>
+
+      </div>
+
+      <div class="progress">
+
+        <div
+          id="completionBar"
+          class="progress-bar"
+          style="width:78.7%">
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="muted"
+      style="margin-top:10px">
+
+      本週期共
+      <strong>150</strong>
+      位同仁
+
+    </div>
+
+  </div>
+
+
+  <!-- Cycle settings -->
+
+  <div class="card">
+
+    <div class="row between">
+
+      <h3 style="margin-bottom:0">
+        週期設定
+      </h3>
+
+      <button
+        class="ghost small"
+        onclick="openPage('cyclePage')">
+
+        編輯週期
+
+      </button>
+
+    </div>
+
+
+    <div
+      class="setting-row"
+      style="margin-top:8px">
+
+      <span class="setting-label">
+        點數額度
+      </span>
+
+      <span
+        id="pointLimit"
+        class="setting-value">
+
+        9 點
+
+      </span>
+
+    </div>
+
+
+    <div class="setting-row">
+
+      <span class="setting-label">
+        預假截止
+      </span>
+
+      <span
+        id="deadline"
+        class="setting-value">
+
+        2026/11/10 23:59
+
+      </span>
+
+    </div>
+
+
+    <div class="setting-row">
+
+      <span class="setting-label">
+        公開每日預假人數
+      </span>
+
+      <span
+        id="visibility"
+        class="setting-value">
+
+        開啟
+
+      </span>
+
+    </div>
+
+
+    <button
+      id="lockButton"
+      class="ghost danger"
+      style="width:100%;margin-top:12px"
+      onclick="toggleLock()">
+
+      🔒 關閉本週期預假
+
+    </button>
+
+  </div>
+
+
+  <!-- Leave overview -->
+
+  <div class="card">
+
+    <div class="row between">
+
+      <h3 style="margin-bottom:0">
+        預假概況
+      </h3>
+
+      <button
+        class="ghost small"
+        onclick="openPage('leavePage')">
+
+        查看全部
+
+      </button>
+
+    </div>
+
+
+    <div
+      id="leaveOverview"
+      style="margin-top:8px">
+    </div>
+
+  </div>
+
+
+  <!-- Management -->
+
+  <div class="card">
+
+    <h3>
+      管理
+    </h3>
+
+
+    <div class="menu-grid">
+
+      <button
+        class="menu-item"
+        onclick="openPage('staffPage')">
+
+        <div class="menu-icon">
+          👥
+        </div>
+
+        <div class="menu-title">
+          人員管理
+        </div>
+
+        <div class="menu-desc">
+          人員、新增、停用與帳號
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="openPage('cyclePage')">
+
+        <div class="menu-icon">
+          📅
+        </div>
+
+        <div class="menu-title">
+          四週期管理
+        </div>
+
+        <div class="menu-desc">
+          週期、截止與點數額度
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="openPage('specialDatePage')">
+
+        <div class="menu-icon">
+          🏷️
+        </div>
+
+        <div class="menu-title">
+          特殊日期
+        </div>
+
+        <div class="menu-desc">
+          教育訓練與特殊事件
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="openPage('leaveTypePage')">
+
+        <div class="menu-icon">
+          🛌
+        </div>
+
+        <div class="menu-title">
+          特殊假別
+        </div>
+
+        <div class="menu-desc">
+          年休週、婚假、公假等
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="openPage('leavePage')">
+
+        <div class="menu-icon">
+          📊
+        </div>
+
+        <div class="menu-title">
+          預假資料
+        </div>
+
+        <div class="menu-desc">
+          依日期或人員查看
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        onclick="fakeExport()">
+
+        <div class="menu-icon">
+          📥
+        </div>
+
+        <div class="menu-title">
+          匯出 Excel
+        </div>
+
+        <div class="menu-desc">
+          匯出排班用預假資料
+        </div>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================================
+     PLACEHOLDER PAGES
+====================================================== -->
+
+<div id="staffPage" class="page">
+
+  <button
+    class="ghost small back"
+    onclick="goDashboard()">
+
+    ← 回管理首頁
+
+  </button>
+
+  <div class="card">
+
+    <h2>
+      👥 人員管理
+    </h2>
+
+    <div class="placeholder">
+
+      <div class="placeholder-icon">
+        👥
+      </div>
+
+      下一階段會在這裡管理：
+      <br><br>
+      員工編號、姓名、角色、啟用狀態、重設 PIN
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="cyclePage" class="page">
+
+  <button
+    class="ghost small back"
+    onclick="goDashboard()">
+
+    ← 回管理首頁
+
+  </button>
+
+  <div class="card">
+
+    <h2>
+      📅 四週期管理
+    </h2>
+
+    <div class="placeholder">
+
+      <div class="placeholder-icon">
+        📅
+      </div>
+
+      下一階段會在這裡管理：
+      <br><br>
+      週期日期、點數額度、截止時間、開放／鎖定與未來週期產生
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="specialDatePage" class="page">
+
+  <button
+    class="ghost small back"
+    onclick="goDashboard()">
+
+    ← 回管理首頁
+
+  </button>
+
+  <div class="card">
+
+    <h2>
+      🏷️ 特殊日期
+    </h2>
+
+    <div class="placeholder">
+
+      <div class="placeholder-icon">
+        🏷️
+      </div>
+
+      例如：
+      <br><br>
+      教育訓練、活動、特殊人力提醒
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="leaveTypePage" class="page">
+
+  <button
+    class="ghost small back"
+    onclick="goDashboard()">
+
+    ← 回管理首頁
+
+  </button>
+
+  <div class="card">
+
+    <h2>
+      🛌 特殊假別
+    </h2>
+
+    <div class="placeholder">
+
+      <div class="placeholder-icon">
+        🛌
+      </div>
+
+      例如：
+      <br><br>
+      年休週、婚假、公假、其他特殊假別
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="leavePage" class="page">
+
+  <button
+    class="ghost small back"
+    onclick="goDashboard()">
+
+    ← 回管理首頁
+
+  </button>
+
+  <div class="card">
+
+    <h2>
+      📊 預假資料
+    </h2>
+
+    <div class="placeholder">
+
+      <div class="placeholder-icon">
+        📊
+      </div>
+
+      這裡之後可以切換：
+      <br><br>
+      「依日期查看」與「依人員查看」
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* ======================================================
+   Prototype 假資料
+====================================================== */
+
+const cycles=[
+
+  {
+    range:"2026/11/23 ～ 2026/12/20",
+    confirmed:118,
+    draft:21,
+    notStarted:11,
+    points:9,
+    deadline:"2026/11/10 23:59",
+    visibility:"開啟",
+    open:true,
+
+    leave:[
+      {
+        date:"12/05",
+        count:18,
+        info:"5⭐ × 3　3⭐ × 5　其他 × 10"
+      },
+      {
+        date:"12/06",
+        count:15,
+        info:"5⭐ × 2　3⭐ × 4　其他 × 9"
+      },
+      {
+        date:"12/13",
+        count:14,
+        info:"5⭐ × 4　其他 × 10"
+      }
+    ]
+  },
+
+  {
+    range:"2026/12/21 ～ 2027/01/17",
+    confirmed:96,
+    draft:32,
+    notStarted:22,
+    points:9,
+    deadline:"2026/12/08 23:59",
+    visibility:"開啟",
+    open:true,
+
+    leave:[
+      {
+        date:"12/25",
+        count:26,
+        info:"5⭐ × 8　3⭐ × 7　其他 × 11"
+      },
+      {
+        date:"12/31",
+        count:23,
+        info:"5⭐ × 6　3⭐ × 5　其他 × 12"
+      },
+      {
+        date:"01/01",
+        count:29,
+        info:"5⭐ × 9　3⭐ × 8　其他 × 12"
+      }
+    ]
+  },
+
+  {
+    range:"2027/01/18 ～ 2027/02/14",
+    confirmed:45,
+    draft:37,
+    notStarted:68,
+    points:12,
+    deadline:"2027/01/05 23:59",
+    visibility:"關閉",
+    open:true,
+
+    leave:[
+      {
+        date:"01/30",
+        count:11,
+        info:"6⭐ × 2　其他 × 9"
+      },
+      {
+        date:"02/06",
+        count:17,
+        info:"6⭐ × 3　3⭐ × 5　其他 × 9"
+      },
+      {
+        date:"02/13",
+        count:20,
+        info:"6⭐ × 5　其他 × 15"
+      }
+    ]
+  }
+
+];
+
+
+let currentCycle=0;
+
+
+/* ======================================================
+   Dashboard
+====================================================== */
+
+function changeCycle(){
+
+  currentCycle=
+    Number(
+      document
+      .getElementById("cycleSelect")
+      .value
+    );
+
+  renderDashboard();
+}
+
+
+function renderDashboard(){
+
+  const c=
+    cycles[currentCycle];
+
+
+  document
+    .getElementById("cycleTitle")
+    .textContent=
+      c.range;
+
+
+  document
+    .getElementById("confirmedCount")
+    .textContent=
+      c.confirmed;
+
+
+  document
+    .getElementById("draftCount")
+    .textContent=
+      c.draft;
+
+
+  document
+    .getElementById("notStartedCount")
+    .textContent=
+      c.notStarted;
+
+
+  document
+    .getElementById("pointLimit")
+    .textContent=
+      `${c.points} 點`;
+
+
+  document
+    .getElementById("deadline")
+    .textContent=
+      c.deadline;
+
+
+  document
+    .getElementById("visibility")
+    .textContent=
+      c.visibility;
+
+
+  const completion=
+    (
+      c.confirmed /
+      (
+        c.confirmed+
+        c.draft+
+        c.notStarted
+      )
+      *100
+    )
+    .toFixed(1);
+
+
+  document
+    .getElementById("completionText")
+    .textContent=
+      `${completion}%`;
+
+
+  document
+    .getElementById("completionBar")
+    .style.width=
+      `${completion}%`;
+
+
+  const status=
+    document
+    .getElementById("cycleStatus");
+
+
+  const lockButton=
+    document
+    .getElementById("lockButton");
+
+
+  if(c.open){
+
+    status.className=
+      "status open";
+
+    status.textContent=
+      "● 開放預假";
+
+    lockButton.textContent=
+      "🔒 關閉本週期預假";
+
+    lockButton.className=
+      "ghost danger";
+
+  }else{
+
+    status.className=
+      "status locked";
+
+    status.textContent=
+      "● 已關閉";
+
+    lockButton.textContent=
+      "🔓 重新開放本週期";
+
+    lockButton.className=
+      "ghost";
+  }
+
+
+  renderLeaveOverview();
+}
+
+
+/* ======================================================
+   預假概況
+====================================================== */
+
+function renderLeaveOverview(){
+
+  const box=
+    document
+    .getElementById("leaveOverview");
+
+
+  const data=
+    cycles[currentCycle].leave;
+
+
+  box.innerHTML=
+    data
+    .map(
+      item=>`
+
+        <div class="leave-row">
+
+          <div class="leave-date">
+            ${item.date}
+          </div>
+
+          <div>
+
+            <div class="leave-count">
+              ${item.count} 人預假
+            </div>
+
+            <div class="point-info">
+              ${item.info}
+            </div>
+
+          </div>
+
+          <span class="count-badge">
+            👥 ${item.count}
+          </span>
+
+        </div>
+
+      `
+    )
+    .join("");
+}
+
+
+/* ======================================================
+   開關週期
+====================================================== */
+
+function toggleLock(){
+
+  const c=
+    cycles[currentCycle];
+
+
+  if(c.open){
+
+    const ok=
+      confirm(
+        "確定要關閉這個四週期的預假嗎？\n\n"+
+        "正式版關閉後，護理師將不能再修改預假。"
+      );
+
+
+    if(!ok){
+      return;
+    }
+
+
+    c.open=false;
+
+  }else{
+
+    const ok=
+      confirm(
+        "確定要重新開放這個四週期嗎？\n\n"+
+        "正式版會留下重新開放的操作紀錄。"
+      );
+
+
+    if(!ok){
+      return;
+    }
+
+
+    c.open=true;
+  }
+
+
+  renderDashboard();
+}
+
+
+/* ======================================================
+   頁面切換
+====================================================== */
+
+function openPage(id){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      page=>
+        page.classList.remove(
+          "active"
+        )
+    );
+
+
+  document
+    .getElementById(id)
+    .classList.add(
+      "active"
+    );
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+
+function goDashboard(){
+
+  openPage(
+    "dashboardPage"
+  );
+
+
+  renderDashboard();
+}
+
+
+/* ======================================================
+   Prototype 動作
+====================================================== */
+
+function fakeExport(){
+
+  alert(
+    "Prototype：\n\n"+
+    "正式版這裡會匯出 Excel。\n\n"+
+    "預計包含：\n"+
+    "1. 排班用矩陣\n"+
+    "2. 預假明細\n"+
+    "3. 填寫狀況"
+  );
+}
+
+
+function fakeLogout(){
+
+  alert(
+    "Prototype：目前尚未串接真正登入系統。"
+  );
+}
+
+
+/* ======================================================
+   啟動
+====================================================== */
+
+renderDashboard();
+
+</script>
+
+</body>
+</html>
