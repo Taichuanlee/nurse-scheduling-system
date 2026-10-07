@@ -1,1283 +1,1120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nurse Scheduling System</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   "Noto Sans TC", Arial, sans-serif;
-      background: #f4f7fb;
-      color: #1f2937;
-    }
-
-    button, input, select, textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .container {
-      width: min(100% - 28px, 760px);
-      margin: 0 auto;
-    }
-
-    .header {
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 18px 0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand {
-      font-weight: 800;
-      font-size: 18px;
-    }
-
-    .brand-small {
-      color: #6b7280;
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    main {
-      padding: 22px 0 60px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(31, 41, 55, 0.05);
-    }
-
-    h1, h2, h3, p {
-      margin-top: 0;
-    }
-
-    h1 {
-      font-size: 26px;
-      margin-bottom: 8px;
-    }
-
-    h2 {
-      font-size: 19px;
-      margin-bottom: 14px;
-    }
-
-    .muted {
-      color: #6b7280;
-    }
-
-    .status {
-      display: inline-block;
-      background: #e9f8f0;
-      color: #16794b;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 7px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      border: 1px solid #d9dee8;
-      border-radius: 12px;
-      padding: 12px 13px;
-      background: white;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: 2px solid #dce6ff;
-      border-color: #5577d9;
-    }
-
-    .primary {
-      width: 100%;
-      border: 0;
-      border-radius: 12px;
-      padding: 13px 16px;
-      background: #315bc7;
-      color: white;
-      font-weight: 800;
-    }
-
-    .secondary {
-      border: 1px solid #d9dee8;
-      background: white;
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-weight: 700;
-    }
-
-    .danger {
-      color: #b42332;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .points-box {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .big-number {
-      font-size: 30px;
-      font-weight: 850;
-      color: #315bc7;
-    }
-
-    .progress {
-      height: 9px;
-      background: #edf0f5;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 12px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #315bc7;
-      transition: width .2s ease;
-    }
-
-    .calendar-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
-
-    .calendar-title h2 {
-      margin-bottom: 3px;
-    }
-
-    .weekdays,
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 7px;
-    }
-
-    .weekday {
-      text-align: center;
-      color: #7b8495;
-      font-size: 12px;
-      font-weight: 700;
-      padding-bottom: 4px;
-    }
-
-    .day {
-      min-height: 74px;
-      border: 1px solid #e1e5ed;
-      background: white;
-      border-radius: 12px;
-      padding: 8px 5px;
-      text-align: center;
-      position: relative;
-      transition: .15s;
-    }
-
-    .day:hover {
-      border-color: #7893df;
-      transform: translateY(-1px);
-    }
-
-    .day-number {
-      font-weight: 800;
-      font-size: 14px;
-    }
-
-    .month-label {
-      font-size: 9px;
-      color: #9aa2b1;
-    }
-
-    .request-label {
-      margin-top: 6px;
-      font-size: 10px;
-      line-height: 1.25;
-      font-weight: 800;
-      color: #315bc7;
-    }
-
-    .day.general {
-      background: #f1f5ff;
-      border-color: #9db2ec;
-    }
-
-    .day.special {
-      background: #f7f1ff;
-      border-color: #bca4e7;
-    }
-
-    .special-date-dot {
-      width: 7px;
-      height: 7px;
-      background: #e64d5f;
-      border-radius: 50%;
-      position: absolute;
-      right: 7px;
-      top: 7px;
-    }
-
-    .special-date-note {
-      color: #b42332;
-      font-size: 9px;
-      margin-top: 3px;
-    }
-
-    .request-item {
-      border-top: 1px solid #edf0f4;
-      padding: 12px 0;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .request-item:first-child {
-      border-top: 0;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      background: #edf2ff;
-      color: #315bc7;
-      margin-left: 6px;
-    }
-
-    .tag.special-tag {
-      background: #f2eaff;
-      color: #7651b8;
-    }
-
-    .remove-btn {
-      border: 0;
-      background: transparent;
-      color: #b42332;
-      font-weight: 700;
-    }
-
-    .login-wrap {
-      min-height: 88vh;
-      display: grid;
-      place-items: center;
-    }
-
-    .login-card {
-      width: min(100%, 430px);
-    }
-
-    .demo {
-      background: #fff8df;
-      border: 1px solid #f1d67c;
-      color: #775b00;
-      border-radius: 12px;
-      padding: 11px 12px;
-      font-size: 13px;
-      margin-bottom: 18px;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(20, 28, 45, .48);
-      z-index: 50;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .modal {
-      background: white;
-      width: min(100%, 600px);
-      border-radius: 22px 22px 0 0;
-      padding: 22px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 -15px 40px rgba(0,0,0,.15);
-    }
-
-    .modal-handle {
-      width: 44px;
-      height: 5px;
-      border-radius: 999px;
-      background: #d9dee8;
-      margin: -8px auto 18px;
-    }
-
-    .type-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .type-tab {
-      border: 1px solid #d9dee8;
-      background: white;
-      border-radius: 12px;
-      padding: 11px;
-      font-weight: 800;
-    }
-
-    .type-tab.active {
-      background: #edf2ff;
-      border-color: #7690db;
-      color: #315bc7;
-    }
-
-    .point-options {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin: 10px 0 18px;
-    }
-
-    .point-btn {
-      border: 1px solid #d9dee8;
-      background: white;
-      border-radius: 10px;
-      padding: 10px 0;
-      font-weight: 800;
-    }
-
-    .point-btn.active {
-      color: white;
-      background: #315bc7;
-      border-color: #315bc7;
-    }
-
-    .point-btn:disabled {
-      opacity: .3;
-      cursor: not-allowed;
-    }
-
-    .modal-actions {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 9px;
-      margin-top: 18px;
-    }
-
-    .summary-box {
-      background: #f8f9fc;
-      border-radius: 12px;
-      padding: 13px;
-      margin-bottom: 14px;
-    }
-
-    .confirmed {
-      background: #eaf8f0;
-      color: #14764a;
-      border-radius: 12px;
-      padding: 12px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    @media (max-width: 560px) {
-      .container {
-        width: min(100% - 20px, 760px);
-      }
-
-      .card {
-        padding: 15px;
-        border-radius: 15px;
-      }
-
-      .day {
-        min-height: 68px;
-        padding: 6px 2px;
-      }
-
-      .request-label {
-        font-size: 9px;
-      }
-
-      .special-date-note {
-        font-size: 8px;
-      }
-
-      h1 {
-        font-size: 23px;
-      }
-
-      .header {
-        padding: 13px 0;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>四週期護理排班預假 V0.2</title>
+
+<style>
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#18212f;
+  background:#f5f7fb;
+}
+*{box-sizing:border-box}
+body{margin:0}
+.wrap{max-width:760px;margin:auto;padding:16px}
+.card{
+  background:#fff;
+  border:1px solid #e5e9f0;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 3px 14px #0000000a;
+}
+h1,h2,h3,p{margin-top:0}
+.muted{color:#667085;font-size:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+
+button,select,input,textarea{font:inherit}
+button{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  background:#e9eef7;
+  color:#172033;
+}
+.primary{background:#1769e0;color:#fff}
+.danger{color:#b42318}
+.ghost{background:#fff;border:1px solid #d8dee9}
+.small{padding:7px 10px;font-size:13px}
+
+.status{
+  padding:5px 9px;
+  border-radius:999px;
+  background:#e9f8ee;
+  color:#16763a;
+  font-size:13px;
+}
+.points{font-size:28px;font-weight:700}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+}
+.dow{
+  text-align:center;
+  font-size:12px;
+  color:#667085;
+  padding:4px;
+}
+.day{
+  min-height:86px;
+  background:#fff;
+  border:1px solid #e2e7ef;
+  border-radius:12px;
+  padding:7px;
+  cursor:pointer;
+  overflow:hidden;
+}
+.day:hover{border-color:#8db7ef}
+.day .num{font-weight:700}
+.day .month{font-size:10px;color:#98a2b3}
+
+.tag{
+  font-size:11px;
+  margin-top:5px;
+  padding:3px 5px;
+  border-radius:7px;
+  background:#edf4ff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.tag.special{background:#f4eefe}
+.special-note{
+  font-size:10px;
+  color:#b42318;
+  margin-top:4px;
+}
+
+.request{
+  padding:12px 0;
+  border-top:1px solid #edf0f4;
+}
+.request:first-child{border-top:0}
+.request-title{font-weight:700}
+.note{
+  font-size:13px;
+  color:#667085;
+  margin-top:4px;
+}
+
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tab.active{background:#1769e0;color:white}
+
+.point-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.point-btn.selected{background:#1769e0;color:#fff}
+.point-btn:disabled{opacity:.35;cursor:not-allowed}
+
+.field{margin:12px 0}
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:6px;
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  border:1px solid #d0d5dd;
+  border-radius:10px;
+  padding:10px;
+  background:#fff;
+}
+.field textarea{min-height:76px;resize:vertical}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0007;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:20;
+}
+.modal.show{display:flex}
+.sheet{
+  background:white;
+  width:min(760px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:22px 22px 0 0;
+  padding:18px;
+}
+
+.login{max-width:430px;margin:8vh auto}
+.hidden{display:none!important}
+.cycle-nav select{flex:1;min-width:230px}
+.section-title{margin-bottom:8px}
+.empty{
+  padding:18px;
+  text-align:center;
+  color:#98a2b3;
+}
+.info-btn{white-space:nowrap}
+
+@media(max-width:560px){
+  .wrap{padding:10px}
+  .card{border-radius:15px;padding:13px}
+  .day{min-height:75px;padding:5px}
+  .calendar{gap:4px}
+  .tag{font-size:10px}
+  .cycle-nav button{padding:9px}
+  .points{font-size:24px}
+}
+</style>
 </head>
 
 <body>
 
-<header class="header hidden" id="mainHeader">
-  <div class="container header-row">
-    <div>
-      <div class="brand">Nurse Scheduling System</div>
-      <div class="brand-small">四週期預假系統 Prototype</div>
+<div id="loginView" class="wrap login">
+  <div class="card">
+    <h1>護理排班預假</h1>
+    <p class="muted">四週期預假系統 V0.2</p>
+
+    <div class="field">
+      <label>員工編號</label>
+      <input id="employeeId" placeholder="Prototype 可任意輸入">
     </div>
 
-    <button class="secondary" onclick="logout()">登出</button>
-  </div>
-</header>
-
-<main>
-
-  <!-- LOGIN -->
-  <section id="loginPage">
-    <div class="container login-wrap">
-      <div class="card login-card">
-
-        <h1>護理排班預假</h1>
-        <p class="muted">登入後即可填寫本四週期預假。</p>
-
-        <div class="demo">
-          🧪 Prototype 模式：目前不會驗證真正帳號，任意輸入即可登入。
-        </div>
-
-        <div class="field">
-          <label>員編</label>
-          <input id="employeeId" placeholder="例如：123456">
-        </div>
-
-        <div class="field">
-          <label>PIN</label>
-          <input id="pin" type="password" placeholder="請輸入 PIN">
-        </div>
-
-        <button class="primary" onclick="login()">登入</button>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- NURSE APP -->
-  <section id="appPage" class="hidden">
-    <div class="container">
-
-      <div class="card">
-        <span class="status">● 預假開放中</span>
-
-        <h1 style="margin-top:14px;">Hi，王小明 👋</h1>
-
-        <p class="muted">
-          第 12 四週期<br>
-          2026/11/23 ～ 2026/12/20
-        </p>
-
-        <p style="margin-bottom:0;">
-          預假截止：
-          <strong>2026/11/10 23:59</strong>
-        </p>
-      </div>
-
-
-      <div class="card">
-        <div class="points-box">
-
-          <div>
-            <div class="muted">本週期點數</div>
-            <div style="font-weight:800;margin-top:4px;">
-              已使用 <span id="usedPoints">0</span> / 9
-            </div>
-          </div>
-
-          <div style="text-align:right;">
-            <div class="muted">剩餘</div>
-            <div class="big-number">
-              <span id="remainingPoints">9</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="progress">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-      </div>
-
-
-      <div class="card">
-
-        <div class="calendar-title">
-          <div>
-            <h2>我的預假月曆</h2>
-            <div class="muted">11/23 ～ 12/20 · 共 28 天</div>
-          </div>
-        </div>
-
-        <div class="weekdays">
-          <div class="weekday">一</div>
-          <div class="weekday">二</div>
-          <div class="weekday">三</div>
-          <div class="weekday">四</div>
-          <div class="weekday">五</div>
-          <div class="weekday">六</div>
-          <div class="weekday">日</div>
-        </div>
-
-        <div class="calendar" id="calendar"></div>
-
-        <p class="muted" style="font-size:12px;margin-top:14px;margin-bottom:0;">
-          點選日期即可新增或修改預假。
-        </p>
-
-      </div>
-
-
-      <div class="card">
-        <h2>我的預假</h2>
-
-        <div id="requestList">
-          <p class="muted">目前尚未填寫任何預假。</p>
-        </div>
-      </div>
-
-
-      <div class="card">
-
-        <div id="draftMessage" class="summary-box">
-          🟡 目前為草稿。系統會即時保留你的修改。
-        </div>
-
-        <div id="confirmedMessage" class="confirmed hidden">
-          ✓ 預假已確認送出。截止日前仍可修改。
-        </div>
-
-        <button class="primary" onclick="confirmRequests()">
-          確認並送出預假
-        </button>
-
-      </div>
-
-    </div>
-  </section>
-
-</main>
-
-
-<!-- DATE MODAL -->
-<div class="modal-backdrop hidden" id="modalBackdrop">
-
-  <div class="modal">
-
-    <div class="modal-handle"></div>
-
-    <h2 id="modalDateTitle">日期</h2>
-
-    <div class="type-tabs">
-      <button
-        class="type-tab active"
-        id="generalTab"
-        onclick="setRequestType('general')">
-        一般預假
-      </button>
-
-      <button
-        class="type-tab"
-        id="specialTab"
-        onclick="setRequestType('special')">
-        特殊預假
-      </button>
+    <div class="field">
+      <label>PIN</label>
+      <input id="pin" type="password" placeholder="Prototype 可任意輸入">
     </div>
 
-
-    <!-- GENERAL -->
-    <div id="generalPanel">
-
-      <label>這一天對你有多重要？</label>
-
-      <p class="muted" style="font-size:13px;">
-        0 點也代表預假，只是不投入優先點數。
-      </p>
-
-      <div class="point-options" id="pointOptions"></div>
-
-      <div class="summary-box">
-        本週期目前剩餘：
-        <strong><span id="modalRemaining">9</span> 點</strong>
-      </div>
-
-    </div>
-
-
-    <!-- SPECIAL -->
-    <div id="specialPanel" class="hidden">
-
-      <div class="field">
-        <label>特殊預假類型</label>
-
-        <select id="specialType">
-          <option value="年休週">年休週</option>
-          <option value="婚假">婚假</option>
-          <option value="公假">公假</option>
-          <option value="其他">其他</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>結束日期</label>
-        <input id="specialEndDate" type="date">
-      </div>
-
-      <div class="field">
-        <label>備註（選填）</label>
-        <textarea
-          id="specialNote"
-          rows="3"
-          placeholder="可輸入備註">
-        </textarea>
-      </div>
-
-      <label style="font-weight:500;">
-        <input
-          id="approvedCheck"
-          type="checkbox"
-          style="width:auto;margin-right:7px;">
-        我確認此特殊預假已完成相關核准程序
-      </label>
-
-    </div>
-
-
-    <div class="modal-actions">
-
-      <button class="secondary" onclick="closeModal()">
-        取消
-      </button>
-
-      <button class="primary" onclick="saveRequest()">
-        儲存
-      </button>
-
-    </div>
-
-    <button
-      id="deleteRequestButton"
-      class="secondary danger hidden"
-      style="width:100%;margin-top:9px;"
-      onclick="deleteCurrentRequest()">
-      刪除此預假
-    </button>
-
+    <button class="primary" style="width:100%" onclick="login()">登入</button>
   </div>
 </div>
 
+<div id="appView" class="hidden">
+<div class="wrap">
+
+  <div class="row between" style="margin-bottom:12px">
+    <div>
+      <strong>Hi，王小明 👋</strong>
+      <div class="muted">四週期護理排班預假</div>
+    </div>
+    <button class="ghost small" onclick="logout()">登出</button>
+  </div>
+
+  <div class="card">
+    <div class="row between">
+      <div>
+        <div class="muted">目前查看</div>
+        <h2 id="cycleTitle" style="margin:3px 0"></h2>
+        <div id="cycleRange" class="muted"></div>
+      </div>
+
+      <button class="ghost info-btn" onclick="openInfo()">
+        ⓘ 填寫說明
+      </button>
+    </div>
+
+    <div class="row cycle-nav" style="margin-top:14px">
+      <button onclick="moveCycle(-1)">←</button>
+
+      <select id="cycleSelect" onchange="selectCycle(this.value)"></select>
+
+      <button onclick="moveCycle(1)">→</button>
+
+      <button class="ghost small" onclick="goCurrent()">
+        目前週期
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row between">
+      <div>
+        <span class="status">開放預假</span>
+        <div class="muted" id="deadline" style="margin-top:8px"></div>
+      </div>
+
+      <div style="text-align:right">
+        <div class="muted">已使用 / 本週期額度</div>
+        <div class="points">
+          <span id="usedPoints">0</span> /
+          <span id="limitPoints">9</span>
+        </div>
+        <div class="muted">
+          剩餘 <span id="remainingPoints">9</span> 點
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>四週期月曆</h3>
+    <div class="calendar" id="calendar"></div>
+  </div>
+
+  <div class="card">
+    <div class="row between">
+      <h3>本週期我的預假</h3>
+      <span id="submissionBadge" class="muted">草稿</span>
+    </div>
+
+    <div id="requestList"></div>
+
+    <button
+      id="confirmBtn"
+      class="primary"
+      style="width:100%;margin-top:12px"
+      onclick="confirmSubmission()">
+      確認並送出預假
+    </button>
+  </div>
+
+</div>
+</div>
+
+<div id="editModal" class="modal">
+<div class="sheet">
+
+  <div class="row between">
+    <h3 id="modalDate">預假</h3>
+    <button class="ghost small" onclick="closeModal('editModal')">
+      關閉
+    </button>
+  </div>
+
+  <div class="tabs">
+    <button id="generalTab" class="tab active"
+      onclick="setTab('general')">
+      一般預假
+    </button>
+
+    <button id="specialTab" class="tab"
+      onclick="setTab('special')">
+      特殊預假
+    </button>
+  </div>
+
+  <div id="generalPane">
+
+    <div class="muted">
+      選擇點數（0 點也代表希望休假）
+    </div>
+
+    <div id="pointGrid"
+      class="point-grid"
+      style="margin-top:10px">
+    </div>
+
+    <div class="field">
+      <label>備註（選填）</label>
+      <textarea
+        id="generalNote"
+        maxlength="200"
+        placeholder="例如：家庭活動、已訂行程…">
+      </textarea>
+    </div>
+
+    <div class="row">
+      <button class="primary" onclick="saveGeneral()">儲存</button>
+      <button class="ghost danger" onclick="deleteCurrent()">
+        刪除此日預假
+      </button>
+    </div>
+
+  </div>
+
+  <div id="specialPane" class="hidden">
+
+    <div class="field">
+      <label>特殊預假類型</label>
+      <select id="specialType">
+        <option>年休週</option>
+        <option>婚假</option>
+        <option>公假</option>
+        <option>其他</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>結束日期</label>
+      <input id="specialEnd" type="date">
+    </div>
+
+    <div class="field">
+      <label>備註（選填）</label>
+      <textarea id="specialNote" maxlength="200"></textarea>
+    </div>
+
+    <label class="muted">
+      <input id="specialApproved" type="checkbox">
+      我確認此特殊預假已完成相關核准程序
+    </label>
+
+    <div class="row" style="margin-top:14px">
+      <button class="primary" onclick="saveSpecial()">
+        儲存特殊預假
+      </button>
+      <button class="ghost danger" onclick="deleteCurrent()">
+        刪除
+      </button>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<div id="infoModal" class="modal">
+<div class="sheet">
+
+  <div class="row between">
+    <h3>預假填寫說明</h3>
+    <button class="ghost small" onclick="closeModal('infoModal')">
+      關閉
+    </button>
+  </div>
+
+  <p>
+    <strong>一般預假</strong><br>
+    每個四週期都有獨立點數額度，預設為 9 點；
+    實際額度依該週期設定為準。
+    點數越高，代表該日期對你的重要程度越高。
+  </p>
+
+  <p>
+    <strong>0 點預假</strong><br>
+    代表希望該日休假，但不投入優先點數。
+  </p>
+
+  <p>
+    <strong>特殊預假</strong><br>
+    包含年休週、婚假、公假及其他特殊假別。
+    正式版的類型將由管理員設定。
+  </p>
+
+  <p>
+    <strong>備註</strong><br>
+    可填寫規劃原因供自己與排班人員參考，
+    其他一般同仁不會看到備註。
+  </p>
+
+  <p>
+    <strong>修改</strong><br>
+    週期開放期間可修改或刪除。
+    若已確認送出後再次修改，狀態會回到「草稿」，
+    需要再次確認送出。
+  </p>
+
+  <button class="primary" style="width:100%"
+    onclick="closeModal('infoModal')">
+    我知道了
+  </button>
+
+</div>
+</div>
 
 <script>
 
-const TOTAL_POINTS = 9;
+function localKey(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 
-const startDate = new Date("2026-11-23T00:00:00");
-const endDate = new Date("2026-12-20T00:00:00");
+function parseKey(k){
+  const [y,m,d]=k.split('-').map(Number);
+  return new Date(y,m-1,d);
+}
 
-let requests = {};
+function addDays(d,n){
+  const x=new Date(d);
+  x.setDate(x.getDate()+n);
+  return x;
+}
 
-let currentDate = null;
-let currentType = "general";
-let selectedPoints = 0;
-let confirmed = false;
+function fmt(d){
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+}
 
+/* ===== 四週期設定 ===== */
 
-// ---------- LOGIN ----------
+const baseStart=new Date(2026,10,23);
 
-function login() {
+const cycles=[];
 
-  const id = document.getElementById("employeeId").value.trim();
-  const pin = document.getElementById("pin").value.trim();
+/* Prototype 先自動產生前後很多個四週期 */
+for(let i=-13;i<40;i++){
 
-  if (!id || !pin) {
-    alert("Prototype 階段請先隨意輸入員編與 PIN。");
-    return;
-  }
+  const start=addDays(baseStart,i*28);
+  const end=addDays(start,27);
 
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("appPage").classList.remove("hidden");
-  document.getElementById("mainHeader").classList.remove("hidden");
+  cycles.push({
+    id:i,
+    start:start,
+    end:end,
+
+    /* 預設每週期 9 點 */
+    pointLimit:i===3 ? 12 : 9,
+
+    open:true,
+
+    deadline:addDays(start,-13)
+  });
+}
+
+/*
+  上面特別讓其中一個未來週期變成 12 點，
+  是為了讓你測試：
+  每個週期確實可以有不同點數。
+*/
+
+let currentIndex=13;
+
+let requests={};
+
+let submissions={};
+
+let selectedDate=null;
+
+let selectedPoints=0;
+
+let activeTab="general";
+
+/* ===== 登入 ===== */
+
+function login(){
+
+  document
+    .getElementById("loginView")
+    .classList.add("hidden");
+
+  document
+    .getElementById("appView")
+    .classList.remove("hidden");
 
   renderAll();
 }
 
-
-function logout() {
-  document.getElementById("appPage").classList.add("hidden");
-  document.getElementById("mainHeader").classList.add("hidden");
-  document.getElementById("loginPage").classList.remove("hidden");
-}
-
-
-// ---------- DATE HELPERS ----------
-
-function dateKey(date) {
-  return date.toISOString().slice(0, 10);
-}
-
-
-function formatDate(date) {
-
-  return `${date.getMonth() + 1}/${date.getDate()}`;
-}
-
-
-function formatFullDate(date) {
-
-  const weekdays = ["日","一","二","三","四","五","六"];
-
-  return `${date.getMonth() + 1} 月 ${date.getDate()} 日（${weekdays[date.getDay()]}）`;
-}
-
-
-// ---------- POINTS ----------
-
-function usedPoints() {
-
-  let total = 0;
-
-  Object.values(requests).forEach(request => {
-
-    if (request.type === "general") {
-      total += Number(request.points || 0);
-    }
-
-  });
-
-  return total;
-}
-
-
-function remainingPoints() {
-
-  return TOTAL_POINTS - usedPoints();
-}
-
-
-// ---------- CALENDAR ----------
-
-function renderCalendar() {
-
-  const calendar = document.getElementById("calendar");
-  calendar.innerHTML = "";
-
-  let current = new Date(startDate);
-
-  while (current <= endDate) {
-
-    const key = dateKey(current);
-    const request = requests[key];
-
-    const button = document.createElement("button");
-
-    button.className = "day";
-
-    if (request) {
-      button.classList.add(
-        request.type === "general" ? "general" : "special"
-      );
-    }
-
-    const month = current.getMonth() + 1;
-    const day = current.getDate();
-
-    let inner = `
-      <div class="month-label">${month}月</div>
-      <div class="day-number">${day}</div>
-    `;
-
-    // Prototype 特殊日期
-    if (key === "2026-12-15") {
-
-      inner += `
-        <div class="special-date-dot"></div>
-        <div class="special-date-note">教育訓練</div>
-      `;
-    }
-
-    if (request) {
-
-      if (request.type === "general") {
-
-        inner += `
-          <div class="request-label">
-            ★ ${request.points} 點
-          </div>
-        `;
-
-      } else {
-
-        inner += `
-          <div class="request-label" style="color:#7651b8;">
-            ${request.specialType}
-          </div>
-        `;
-
-      }
-
-    }
-
-    button.innerHTML = inner;
-
-    const dateCopy = new Date(current);
-
-    button.onclick = () => openModal(dateCopy);
-
-    calendar.appendChild(button);
-
-    current.setDate(current.getDate() + 1);
-  }
-}
-
-
-// ---------- MODAL ----------
-
-function openModal(date) {
-
-  currentDate = date;
-
-  const key = dateKey(date);
-  const existing = requests[key];
-
-  document.getElementById("modalDateTitle").textContent =
-    formatFullDate(date);
-
-  currentType = existing ? existing.type : "general";
-
-  if (existing && existing.type === "general") {
-    selectedPoints = existing.points;
-  } else {
-    selectedPoints = 0;
-  }
-
-  if (existing && existing.type === "special") {
-
-    document.getElementById("specialType").value =
-      existing.specialType || "年休週";
-
-    document.getElementById("specialEndDate").value =
-      existing.endDate || key;
-
-    document.getElementById("specialNote").value =
-      existing.note || "";
-
-    document.getElementById("approvedCheck").checked = true;
-
-  } else {
-
-    document.getElementById("specialType").value = "年休週";
-    document.getElementById("specialEndDate").value = key;
-    document.getElementById("specialNote").value = "";
-    document.getElementById("approvedCheck").checked = false;
-
-  }
-
-  document.getElementById("specialEndDate").min = key;
-  document.getElementById("specialEndDate").max = dateKey(endDate);
+function logout(){
 
   document
-    .getElementById("deleteRequestButton")
-    .classList.toggle("hidden", !existing);
-
-  updateTypePanels();
-  renderPointButtons();
+    .getElementById("appView")
+    .classList.add("hidden");
 
   document
-    .getElementById("modalBackdrop")
+    .getElementById("loginView")
     .classList.remove("hidden");
 }
 
+/* ===== 四週期 ===== */
 
-function closeModal() {
-
-  document
-    .getElementById("modalBackdrop")
-    .classList.add("hidden");
+function cycle(){
+  return cycles[currentIndex];
 }
 
-
-function setRequestType(type) {
-
-  currentType = type;
-
-  updateTypePanels();
-  renderPointButtons();
+function cycleKey(){
+  return localKey(cycle().start);
 }
 
+function reqs(){
 
-function updateTypePanels() {
-
-  document
-    .getElementById("generalTab")
-    .classList.toggle("active", currentType === "general");
-
-  document
-    .getElementById("specialTab")
-    .classList.toggle("active", currentType === "special");
-
-  document
-    .getElementById("generalPanel")
-    .classList.toggle("hidden", currentType !== "general");
-
-  document
-    .getElementById("specialPanel")
-    .classList.toggle("hidden", currentType !== "special");
-}
-
-
-function renderPointButtons() {
-
-  const box = document.getElementById("pointOptions");
-
-  box.innerHTML = "";
-
-  const key = currentDate ? dateKey(currentDate) : null;
-  const existing = key ? requests[key] : null;
-
-  let reusablePoints = remainingPoints();
-
-  if (existing && existing.type === "general") {
-    reusablePoints += Number(existing.points || 0);
+  if(!requests[cycleKey()]){
+    requests[cycleKey()]={};
   }
 
-  document.getElementById("modalRemaining").textContent =
-    reusablePoints;
-
-  for (let i = 0; i <= TOTAL_POINTS; i++) {
-
-    const button = document.createElement("button");
-
-    button.className = "point-btn";
-    button.textContent = i;
-
-    if (selectedPoints === i) {
-      button.classList.add("active");
-    }
-
-    if (i > reusablePoints) {
-      button.disabled = true;
-    }
-
-    button.onclick = () => {
-
-      selectedPoints = i;
-
-      renderPointButtons();
-    };
-
-    box.appendChild(button);
-  }
+  return requests[cycleKey()];
 }
 
+function used(){
 
-// ---------- SAVE ----------
+  return Object.values(reqs())
+    .filter(r=>r.type==="general")
+    .reduce((sum,r)=>sum+r.points,0);
+}
 
-function saveRequest() {
+function renderAll(){
 
-  const key = dateKey(currentDate);
+  renderCycleSelect();
 
-  if (currentType === "general") {
+  renderSummary();
 
-    let available = remainingPoints();
+  renderCalendar();
 
-    if (
-      requests[key] &&
-      requests[key].type === "general"
-    ) {
-      available += Number(requests[key].points || 0);
-    }
+  renderList();
+}
 
-    if (selectedPoints > available) {
+function renderCycleSelect(){
 
-      alert("剩餘點數不足。");
-      return;
-    }
+  const select=document.getElementById("cycleSelect");
 
-    requests[key] = {
-      type: "general",
-      points: selectedPoints
-    };
+  select.innerHTML=cycles.map((c,i)=>{
 
-  } else {
+    return `
+      <option value="${i}"
+        ${i===currentIndex ? "selected" : ""}>
+        ${fmt(c.start)} ～ ${fmt(c.end)}
+      </option>
+    `;
 
-    const approved =
-      document.getElementById("approvedCheck").checked;
+  }).join("");
+}
 
-    if (!approved) {
+function renderSummary(){
 
-      alert("請先確認此特殊預假已完成相關核准程序。");
-      return;
-    }
+  const c=cycle();
 
-    const endDateValue =
-      document.getElementById("specialEndDate").value;
+  document.getElementById("cycleTitle").textContent=
+    `四週期 ${fmt(c.start)} 起`;
 
-    const specialType =
-      document.getElementById("specialType").value;
+  document.getElementById("cycleRange").textContent=
+    `${fmt(c.start)} ～ ${fmt(c.end)}`;
 
-    const note =
-      document.getElementById("specialNote").value.trim();
+  document.getElementById("deadline").textContent=
+    `預假截止：${fmt(c.deadline)} 23:59`;
 
-    const start = new Date(key + "T00:00:00");
-    const end = new Date(endDateValue + "T00:00:00");
+  document.getElementById("limitPoints").textContent=
+    c.pointLimit;
 
-    if (end < start) {
+  document.getElementById("usedPoints").textContent=
+    used();
 
-      alert("結束日期不可早於開始日期。");
-      return;
-    }
+  document.getElementById("remainingPoints").textContent=
+    c.pointLimit-used();
 
-    let cursor = new Date(start);
+  const confirmed=
+    submissions[cycleKey()]===true;
 
-    while (cursor <= end) {
+  document.getElementById("submissionBadge").textContent=
+    confirmed ? "✓ 已確認送出" : "草稿";
 
-      const cursorKey = dateKey(cursor);
+  document.getElementById("confirmBtn").textContent=
+    confirmed ? "✓ 已確認送出" : "確認並送出預假";
+}
 
-      requests[cursorKey] = {
-        type: "special",
-        specialType: specialType,
-        startDate: key,
-        endDate: endDateValue,
-        note: note
-      };
+function moveCycle(n){
 
-      cursor.setDate(cursor.getDate() + 1);
-    }
-  }
+  currentIndex=Math.max(
+    0,
+    Math.min(
+      cycles.length-1,
+      currentIndex+n
+    )
+  );
 
-  confirmed = false;
+  renderAll();
 
-  closeModal();
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function selectCycle(value){
+
+  currentIndex=Number(value);
 
   renderAll();
 }
 
+function goCurrent(){
 
-function deleteCurrentRequest() {
-
-  const key = dateKey(currentDate);
-
-  const request = requests[key];
-
-  if (!request) return;
-
-  if (request.type === "special") {
-
-    const start = request.startDate;
-    const end = request.endDate;
-
-    Object.keys(requests).forEach(k => {
-
-      const r = requests[k];
-
-      if (
-        r.type === "special" &&
-        r.startDate === start &&
-        r.endDate === end
-      ) {
-        delete requests[k];
-      }
-
-    });
-
-  } else {
-
-    delete requests[key];
-  }
-
-  confirmed = false;
-
-  closeModal();
+  currentIndex=13;
 
   renderAll();
 }
 
+/* ===== 月曆 ===== */
 
-// ---------- REQUEST LIST ----------
+function renderCalendar(){
 
-function renderRequestList() {
+  const calendar=
+    document.getElementById("calendar");
 
-  const list = document.getElementById("requestList");
+  calendar.innerHTML=
+    ["一","二","三","四","五","六","日"]
+    .map(x=>`<div class="dow">${x}</div>`)
+    .join("");
 
-  const keys = Object.keys(requests).sort();
+  const data=reqs();
 
-  if (keys.length === 0) {
+  for(let i=0;i<28;i++){
 
-    list.innerHTML =
-      `<p class="muted">目前尚未填寫任何預假。</p>`;
+    const date=addDays(cycle().start,i);
+
+    const key=localKey(date);
+
+    const request=data[key];
+
+    const cell=document.createElement("div");
+
+    cell.className="day";
+
+    let tag="";
+
+    if(request?.type==="general"){
+
+      tag=`
+        <div class="tag">
+          ★ ${request.points} 點
+          ${request.note
+            ? " · "+escapeHtml(request.note)
+            : ""}
+        </div>
+      `;
+    }
+
+    if(request?.type==="special"){
+
+      tag=`
+        <div class="tag special">
+          ${escapeHtml(request.specialType)}
+        </div>
+      `;
+    }
+
+    let specialDate="";
+
+    if(key==="2026-12-15"){
+
+      specialDate=`
+        <div class="special-note">
+          ● 教育訓練
+        </div>
+      `;
+    }
+
+    cell.innerHTML=`
+      <span class="month">
+        ${date.getMonth()+1}月
+      </span>
+
+      <span class="num">
+        ${date.getDate()}
+      </span>
+
+      ${tag}
+
+      ${specialDate}
+    `;
+
+    cell.onclick=()=>openEdit(key);
+
+    calendar.appendChild(cell);
+  }
+}
+
+/* ===== 我的預假 ===== */
+
+function renderList(){
+
+  const box=
+    document.getElementById("requestList");
+
+  const entries=
+    Object.entries(reqs())
+    .sort(([a],[b])=>a.localeCompare(b));
+
+  if(!entries.length){
+
+    box.innerHTML=`
+      <div class="empty">
+        這個四週期還沒有預假
+      </div>
+    `;
 
     return;
   }
 
-  let html = "";
+  box.innerHTML=entries.map(([key,r])=>{
 
-  keys.forEach(key => {
+    const title=
+      r.type==="general"
+      ? `一般預假 · ${r.points} 點`
+      : escapeHtml(r.specialType);
 
-    const request = requests[key];
+    const note=
+      r.note
+      ? `<div class="note">
+           備註：${escapeHtml(r.note)}
+         </div>`
+      : "";
 
-    const date = new Date(key + "T00:00:00");
+    return `
+      <div class="request">
 
-    if (request.type === "general") {
+        <div class="row between">
 
-      html += `
-        <div class="request-item">
           <div>
-            <strong>${formatDate(date)}</strong>
-            <span class="tag">一般預假</span>
-            <div class="muted" style="font-size:13px;margin-top:5px;">
-              ${request.points} 點
+
+            <div class="request-title">
+              ${fmt(parseKey(key))}
+             　${title}
             </div>
+
+            ${note}
+
           </div>
 
-          <button
-            class="remove-btn"
-            onclick="quickDelete('${key}')">
-            刪除
-          </button>
-        </div>
-      `;
+          <div class="row">
 
-    } else {
+            <button
+              class="ghost small"
+              onclick="openEdit('${key}')">
+              修改
+            </button>
 
-      html += `
-        <div class="request-item">
-          <div>
-            <strong>${formatDate(date)}</strong>
-            <span class="tag special-tag">
-              ${request.specialType}
-            </span>
+            <button
+              class="ghost small danger"
+              onclick="deleteByKey('${key}')">
+              刪除
+            </button>
+
           </div>
-        </div>
-      `;
-    }
-  });
 
-  list.innerHTML = html;
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
 }
 
+/* ===== 編輯預假 ===== */
 
-function quickDelete(key) {
+function openEdit(key){
 
-  delete requests[key];
+  selectedDate=key;
 
-  confirmed = false;
+  const request=reqs()[key];
+
+  document.getElementById("modalDate").textContent=
+    `${fmt(parseKey(key))} 預假`;
+
+  document.getElementById("specialEnd").value=
+    key;
+
+  document.getElementById("generalNote").value=
+    request?.type==="general"
+    ? request.note || ""
+    : "";
+
+  document.getElementById("specialNote").value=
+    request?.type==="special"
+    ? request.note || ""
+    : "";
+
+  document.getElementById("specialType").value=
+    request?.type==="special"
+    ? request.specialType
+    : "年休週";
+
+  document.getElementById("specialApproved").checked=
+    request?.type==="special"
+    ? !!request.approved
+    : false;
+
+  selectedPoints=
+    request?.type==="general"
+    ? request.points
+    : 0;
+
+  setTab(
+    request?.type==="special"
+    ? "special"
+    : "general"
+  );
+
+  renderPointGrid();
+
+  document
+    .getElementById("editModal")
+    .classList.add("show");
+}
+
+/* ===== 點數 ===== */
+
+function renderPointGrid(){
+
+  const existing=
+    reqs()[selectedDate];
+
+  const credit=
+    existing?.type==="general"
+    ? existing.points
+    : 0;
+
+  const max=
+    cycle().pointLimit
+    - used()
+    + credit;
+
+  const grid=
+    document.getElementById("pointGrid");
+
+  grid.innerHTML="";
+
+  for(
+    let point=0;
+    point<=cycle().pointLimit;
+    point++
+  ){
+
+    const button=
+      document.createElement("button");
+
+    button.className=
+      "point-btn"
+      +(point===selectedPoints
+        ? " selected"
+        : "");
+
+    button.textContent=point;
+
+    button.disabled=
+      point>max;
+
+    button.onclick=()=>{
+
+      selectedPoints=point;
+
+      renderPointGrid();
+    };
+
+    grid.appendChild(button);
+  }
+}
+
+/* ===== 一般 / 特殊 ===== */
+
+function setTab(type){
+
+  activeTab=type;
+
+  document
+    .getElementById("generalPane")
+    .classList.toggle(
+      "hidden",
+      type!=="general"
+    );
+
+  document
+    .getElementById("specialPane")
+    .classList.toggle(
+      "hidden",
+      type!=="special"
+    );
+
+  document
+    .getElementById("generalTab")
+    .classList.toggle(
+      "active",
+      type==="general"
+    );
+
+  document
+    .getElementById("specialTab")
+    .classList.toggle(
+      "active",
+      type==="special"
+    );
+}
+
+function markDraft(){
+
+  submissions[cycleKey()]=false;
+}
+
+/* ===== 儲存一般預假 ===== */
+
+function saveGeneral(){
+
+  reqs()[selectedDate]={
+    type:"general",
+    points:selectedPoints,
+    note:
+      document
+      .getElementById("generalNote")
+      .value
+      .trim()
+  };
+
+  markDraft();
+
+  closeModal("editModal");
 
   renderAll();
 }
 
+/* ===== 儲存特殊預假 ===== */
 
-// ---------- CONFIRM ----------
+function saveSpecial(){
 
-function confirmRequests() {
+  const end=
+    document
+    .getElementById("specialEnd")
+    .value;
 
-  if (Object.keys(requests).length === 0) {
+  if(!end || end<selectedDate){
 
-    const proceed = confirm(
-      "目前沒有任何預假。仍要確認送出嗎？"
-    );
+    alert("結束日期不能早於開始日期");
 
-    if (!proceed) return;
+    return;
   }
 
-  confirmed = true;
+  const type=
+    document
+    .getElementById("specialType")
+    .value;
 
-  renderConfirmation();
+  const note=
+    document
+    .getElementById("specialNote")
+    .value
+    .trim();
 
-  alert("預假已確認送出！");
-}
+  const approved=
+    document
+    .getElementById("specialApproved")
+    .checked;
 
+  let date=parseKey(selectedDate);
 
-function renderConfirmation() {
+  const last=parseKey(end);
 
-  document
-    .getElementById("draftMessage")
-    .classList.toggle("hidden", confirmed);
+  while(date<=last){
 
-  document
-    .getElementById("confirmedMessage")
-    .classList.toggle("hidden", !confirmed);
-}
+    const key=localKey(date);
 
+    /*
+      Prototype 目前只寫入
+      正在查看的四週期範圍。
+    */
+    if(
+      date>=cycle().start
+      &&
+      date<=cycle().end
+    ){
 
-// ---------- UI ----------
-
-function renderPoints() {
-
-  const used = usedPoints();
-  const remaining = remainingPoints();
-
-  document.getElementById("usedPoints").textContent = used;
-  document.getElementById("remainingPoints").textContent = remaining;
-
-  const percent =
-    Math.min(100, (used / TOTAL_POINTS) * 100);
-
-  document.getElementById("progressBar").style.width =
-    percent + "%";
-}
-
-
-function renderAll() {
-
-  renderPoints();
-  renderCalendar();
-  renderRequestList();
-  renderConfirmation();
-}
-
-
-// Close modal by clicking background
-document
-  .getElementById("modalBackdrop")
-  .addEventListener("click", function(event) {
-
-    if (event.target === this) {
-      closeModal();
+      reqs()[key]={
+        type:"special",
+        specialType:type,
+        note:note,
+        approved:approved,
+        rangeStart:selectedDate,
+        rangeEnd:end
+      };
     }
 
-  });
+    date=addDays(date,1);
+  }
+
+  markDraft();
+
+  closeModal("editModal");
+
+  renderAll();
+}
+
+/* ===== 刪除 ===== */
+
+function deleteCurrent(){
+
+  deleteByKey(selectedDate);
+
+  closeModal("editModal");
+}
+
+function deleteByKey(key){
+
+  const request=reqs()[key];
+
+  /*
+    如果是特殊預假的日期區間，
+    刪除其中一天時，
+    Prototype 會刪除整段。
+  */
+  if(
+    request?.type==="special"
+    &&
+    request.rangeStart
+  ){
+
+    for(
+      const [dateKey,item]
+      of Object.entries(reqs())
+    ){
+
+      if(
+        item.type==="special"
+        &&
+        item.rangeStart===request.rangeStart
+        &&
+        item.rangeEnd===request.rangeEnd
+      ){
+
+        delete reqs()[dateKey];
+      }
+    }
+
+  }else{
+
+    delete reqs()[key];
+  }
+
+  markDraft();
+
+  renderAll();
+}
+
+/* ===== 確認送出 ===== */
+
+function confirmSubmission(){
+
+  submissions[cycleKey()]=true;
+
+  renderSummary();
+
+  alert(
+    "已確認送出這個四週期的預假。\n\n"+
+    "截止前若再次修改，會自動回到草稿。"
+  );
+}
+
+/* ===== 說明 ===== */
+
+function openInfo(){
+
+  document
+    .getElementById("infoModal")
+    .classList.add("show");
+}
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+}
+
+/* ===== 安全顯示文字 ===== */
+
+function escapeHtml(text=""){
+
+  return text.replace(
+    /[&<>'"]/g,
+    char=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      "'":"&#39;",
+      '"':"&quot;"
+    }[char])
+  );
+}
 
 </script>
 
