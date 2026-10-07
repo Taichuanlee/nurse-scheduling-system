@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>四週期護理排班預假 V0.4</title>
+<title>四週期護理排班預假 V0.5</title>
 
 <style>
 :root{
@@ -76,7 +76,7 @@ button{
 
 .hidden{display:none!important}
 
-/* ===== 狀態 ===== */
+/* ===== 狀態卡 ===== */
 
 .status{
   display:inline-block;
@@ -86,13 +86,6 @@ button{
   color:#16763a;
   font-size:13px;
   font-weight:600;
-}
-
-.summary-top{
-  display:flex;
-  justify-content:space-between;
-  gap:16px;
-  align-items:flex-start;
 }
 
 .summary-deadline{
@@ -116,6 +109,7 @@ button{
   display:flex;
   align-items:baseline;
   gap:8px;
+  flex-wrap:wrap;
 }
 
 .points{
@@ -173,11 +167,13 @@ button{
   color:#667085;
 }
 
-/* ===== 月曆 ===== */
+/* =========================================================
+   月曆
+========================================================= */
 
 .calendar{
   display:grid;
-  grid-template-columns:repeat(7,1fr);
+  grid-template-columns:repeat(7,minmax(0,1fr));
   gap:6px;
 }
 
@@ -188,8 +184,14 @@ button{
   padding:4px;
 }
 
+/*
+  V0.5：
+  每一格內部改成固定垂直排列。
+*/
+
 .day{
-  min-height:92px;
+  min-width:0;
+  min-height:105px;
   background:#fff;
   border:1px solid #e2e7ef;
   border-radius:12px;
@@ -199,7 +201,9 @@ button{
   transition:.15s;
 }
 
-.day:hover{border-color:#8db7ef}
+.day:hover{
+  border-color:#8db7ef;
+}
 
 .day.requested{
   border-width:2px;
@@ -225,33 +229,62 @@ button{
   border-color:#b9bec7;
 }
 
-.day .month{
+/*
+  月份、日期、班別各自獨立一列。
+  不再讓瀏覽器把 N 擠到日期旁邊。
+*/
+
+.day-month{
   display:block;
+  height:15px;
+  line-height:15px;
   font-size:10px;
   color:#98a2b3;
-  margin-bottom:1px;
+  white-space:nowrap;
 }
 
-.day .num{
-  font-weight:700;
+.day-number{
+  display:block;
+  height:27px;
+  line-height:27px;
+  font-size:20px;
+  font-weight:750;
+  white-space:nowrap;
 }
 
-.shift-label{
-  display:inline-block;
+.day-shift{
+  display:block;
+  height:17px;
+  line-height:17px;
   font-size:10px;
   font-weight:700;
-  margin-left:3px;
   color:#475467;
+  white-space:nowrap;
+}
+
+/*
+  沒有班別時也保留同樣高度，
+  所以每格下面的預假資訊仍然會對齊。
+*/
+
+.day-shift.empty{
+  visibility:hidden;
+}
+
+.day-request-area{
+  min-height:37px;
 }
 
 .tag{
   display:inline-block;
+  max-width:100%;
   font-size:12px;
   font-weight:750;
-  margin-top:6px;
-  padding:3px 6px;
+  margin-top:3px;
+  padding:3px 5px;
   border-radius:7px;
   background:#ffffffaa;
+  white-space:nowrap;
 }
 
 .tag.special{
@@ -260,16 +293,23 @@ button{
 }
 
 .request-count{
+  display:block;
   font-size:10px;
+  line-height:14px;
   color:#667085;
-  margin-top:4px;
+  margin-top:3px;
+  white-space:nowrap;
 }
 
 .special-note{
-  font-size:10px;
+  display:block;
+  font-size:9px;
+  line-height:12px;
   color:#b42318;
-  margin-top:4px;
+  margin-top:3px;
 }
+
+/* ===== 圖例 ===== */
 
 .legend{
   display:flex;
@@ -298,7 +338,9 @@ button{
 .legend-N{background:#eeeafd}
 .legend-U{background:#f0f1f3}
 
-/* ===== 我的預假 ===== */
+/* =========================================================
+   我的預假
+========================================================= */
 
 .my-tabs{
   display:flex;
@@ -328,7 +370,9 @@ button{
   border-top:1px solid #edf0f4;
 }
 
-.request:first-child{border-top:0}
+.request:first-child{
+  border-top:0;
+}
 
 .request-title{
   font-weight:700;
@@ -447,7 +491,9 @@ button{
   z-index:20;
 }
 
-.modal.show{display:flex}
+.modal.show{
+  display:flex;
+}
 
 .sheet{
   background:#fff;
@@ -468,44 +514,77 @@ button{
   min-width:230px;
 }
 
-.info-btn{white-space:nowrap}
+.info-btn{
+  white-space:nowrap;
+}
+
+/* =========================================================
+   手機
+========================================================= */
 
 @media(max-width:560px){
 
-  .wrap{padding:10px}
+  .wrap{
+    padding:10px;
+  }
 
   .card{
     border-radius:15px;
     padding:13px;
   }
 
-  .summary-top{
-    display:block;
-  }
-
   .point-summary{
     margin-top:12px;
   }
 
-  .calendar{gap:4px}
+  .calendar{
+    gap:4px;
+  }
 
   .day{
-    min-height:82px;
+    min-height:96px;
     padding:5px;
+    border-radius:11px;
+  }
+
+  .day-month{
+    height:14px;
+    line-height:14px;
+    font-size:9px;
+  }
+
+  .day-number{
+    height:26px;
+    line-height:26px;
+    font-size:19px;
+  }
+
+  .day-shift{
+    height:16px;
+    line-height:16px;
+    font-size:9px;
   }
 
   .tag{
-    font-size:11px;
+    font-size:10px;
     padding:2px 4px;
   }
 
-  .request-count{font-size:9px}
+  .request-count{
+    font-size:9px;
+  }
 
-  .shift-label{font-size:9px}
+  .special-note{
+    font-size:8px;
+  }
 
-  .cycle-nav button{padding:9px}
+  .cycle-nav button{
+    padding:9px;
+  }
 
-  .points{font-size:25px}
+  .points{
+    font-size:25px;
+  }
 
   .request-actions{
     width:100%;
@@ -517,7 +596,9 @@ button{
 
 <body>
 
-<!-- 登入 -->
+<!-- =====================================================
+     登入
+===================================================== -->
 
 <div id="loginView" class="wrap login">
 
@@ -526,7 +607,7 @@ button{
     <h1>護理排班預假</h1>
 
     <p class="muted">
-      四週期預假系統 V0.4
+      四週期預假系統 V0.5
     </p>
 
     <div class="field">
@@ -539,8 +620,13 @@ button{
       <input id="pin" type="password" placeholder="Prototype 可任意輸入">
     </div>
 
-    <button class="primary" style="width:100%" onclick="login()">
+    <button
+      class="primary"
+      style="width:100%"
+      onclick="login()">
+
       登入
+
     </button>
 
   </div>
@@ -548,7 +634,9 @@ button{
 </div>
 
 
-<!-- APP -->
+<!-- =====================================================
+     APP
+===================================================== -->
 
 <div id="appView" class="hidden">
 
@@ -557,12 +645,23 @@ button{
   <div class="row between" style="margin-bottom:12px">
 
     <div>
-      <strong>Hi，王小明 👋</strong>
-      <div class="muted">四週期護理排班預假</div>
+
+      <strong>
+        Hi，王小明 👋
+      </strong>
+
+      <div class="muted">
+        四週期護理排班預假
+      </div>
+
     </div>
 
-    <button class="ghost small" onclick="logout()">
+    <button
+      class="ghost small"
+      onclick="logout()">
+
       登出
+
     </button>
 
   </div>
@@ -580,20 +679,32 @@ button{
           目前查看
         </div>
 
-        <h2 id="cycleTitle" style="margin:3px 0"></h2>
+        <h2
+          id="cycleTitle"
+          style="margin:3px 0">
+        </h2>
 
-        <div id="cycleRange" class="muted"></div>
+        <div
+          id="cycleRange"
+          class="muted">
+        </div>
 
       </div>
 
-      <button class="ghost info-btn" onclick="openInfo()">
+      <button
+        class="ghost info-btn"
+        onclick="openInfo()">
+
         ⓘ 填寫說明
+
       </button>
 
     </div>
 
 
-    <div class="row cycle-nav" style="margin-top:14px">
+    <div
+      class="row cycle-nav"
+      style="margin-top:14px">
 
       <button onclick="moveCycle(-1)">
         ←
@@ -608,8 +719,12 @@ button{
         →
       </button>
 
-      <button class="ghost small" onclick="goCurrent()">
+      <button
+        class="ghost small"
+        onclick="goCurrent()">
+
         目前週期
+
       </button>
 
     </div>
@@ -617,25 +732,17 @@ button{
   </div>
 
 
-  <!-- 狀態 / 點數 / 班別 -->
+  <!-- 狀態 -->
 
   <div class="card">
 
-    <div class="summary-top">
+    <span class="status">
+      開放預假
+    </span>
 
-      <div>
-
-        <span class="status">
-          開放預假
-        </span>
-
-        <div
-          id="deadline"
-          class="muted summary-deadline">
-        </div>
-
-      </div>
-
+    <div
+      id="deadline"
+      class="muted summary-deadline">
     </div>
 
 
@@ -658,7 +765,9 @@ button{
         <div class="remaining">
 
           剩餘
-          <strong id="remainingPoints">9</strong>
+          <strong id="remainingPoints">
+            9
+          </strong>
           點
 
         </div>
@@ -738,7 +847,9 @@ button{
       <span
         id="submissionBadge"
         class="muted">
+
         草稿
+
       </span>
 
     </div>
@@ -791,7 +902,9 @@ button{
 </div>
 
 
-<!-- 編輯預假 -->
+<!-- =====================================================
+     編輯預假
+===================================================== -->
 
 <div id="editModal" class="modal">
 
@@ -806,7 +919,9 @@ button{
     <button
       class="ghost small"
       onclick="closeModal('editModal')">
+
       關閉
+
     </button>
 
   </div>
@@ -818,14 +933,18 @@ button{
       id="generalTab"
       class="tab active"
       onclick="setTab('general')">
+
       一般預假
+
     </button>
 
     <button
       id="specialTab"
       class="tab"
       onclick="setTab('special')">
+
       特殊預假
+
     </button>
 
   </div>
@@ -871,13 +990,17 @@ button{
       <button
         class="primary"
         onclick="saveGeneral()">
+
         儲存
+
       </button>
 
       <button
         class="ghost danger"
         onclick="deleteCurrent()">
+
         刪除此日預假
+
       </button>
 
     </div>
@@ -887,7 +1010,9 @@ button{
 
   <!-- 特殊預假 -->
 
-  <div id="specialPane" class="hidden">
+  <div
+    id="specialPane"
+    class="hidden">
 
     <div class="field">
 
@@ -896,10 +1021,12 @@ button{
       </label>
 
       <select id="specialType">
+
         <option>年休週</option>
         <option>婚假</option>
         <option>公假</option>
         <option>其他</option>
+
       </select>
 
     </div>
@@ -942,18 +1069,24 @@ button{
     </label>
 
 
-    <div class="row" style="margin-top:14px">
+    <div
+      class="row"
+      style="margin-top:14px">
 
       <button
         class="primary"
         onclick="saveSpecial()">
+
         儲存特殊預假
+
       </button>
 
       <button
         class="ghost danger"
         onclick="deleteCurrent()">
+
         刪除
+
       </button>
 
     </div>
@@ -965,7 +1098,9 @@ button{
 </div>
 
 
-<!-- 填寫說明 -->
+<!-- =====================================================
+     填寫說明
+===================================================== -->
 
 <div id="infoModal" class="modal">
 
@@ -980,7 +1115,9 @@ button{
     <button
       class="ghost small"
       onclick="closeModal('infoModal')">
+
       關閉
+
     </button>
 
   </div>
@@ -1115,11 +1252,6 @@ function monthKey(date){
    Prototype 後台設定
 ========================================================= */
 
-/*
- true  = 顯示每日預假人數
- false = 不顯示
-*/
-
 const showRequestCount=true;
 
 
@@ -1191,6 +1323,7 @@ for(let i=-13;i<40;i++){
       27
     );
 
+
   cycles.push({
 
     id:i,
@@ -1199,13 +1332,6 @@ for(let i=-13;i<40;i++){
 
     end:end,
 
-    /*
-      Prototype：
-      預設 9 點。
-
-      故意讓其中一個未來週期 12 點，
-      測試每週期不同額度。
-    */
     pointLimit:
       i===3
       ? 12
@@ -1535,7 +1661,7 @@ function renderShiftBadges(){
     .map(
       ([mk,shift])=>{
 
-        const [year,month]=
+        const [,month]=
           mk.split("-");
 
 
@@ -1550,11 +1676,8 @@ function renderShiftBadges(){
 
 
         return `
-          <span
-            class="shift-badge ${cls}">
-
+          <span class="shift-badge ${cls}">
             ${label}
-
           </span>
         `;
       }
@@ -1613,7 +1736,7 @@ function goCurrent(){
 
 
 /* =========================================================
-   月曆
+   月曆 V0.5
 ========================================================= */
 
 function renderCalendar(){
@@ -1675,7 +1798,8 @@ function renderCalendar(){
 
 
     /*
-      只有自己有預假時才變色
+      只有自己有預假時，
+      整格依班別變色。
     */
 
     if(request){
@@ -1699,6 +1823,10 @@ function renderCalendar(){
       }
     }
 
+
+    /*
+      自己的預假
+    */
 
     let tag="";
 
@@ -1729,6 +1857,10 @@ function renderCalendar(){
     }
 
 
+    /*
+      每日總預假人數
+    */
+
     let countTag="";
 
 
@@ -1749,6 +1881,10 @@ function renderCalendar(){
     }
 
 
+    /*
+      特殊日期
+    */
+
     let specialDate="";
 
 
@@ -1762,31 +1898,51 @@ function renderCalendar(){
     }
 
 
+    /*
+      V0.5 重點：
+
+      月份
+      日期
+      班別
+
+      三個各自獨立一列。
+    */
+
+    const shiftHTML=
+      shift
+      ? `
+        <span class="day-shift">
+          ${shift}
+        </span>
+      `
+      : `
+        <span class="day-shift empty">
+          -
+        </span>
+      `;
+
+
     cell.innerHTML=`
 
-      <span class="month">
+      <span class="day-month">
         ${date.getMonth()+1}月
       </span>
 
-      <span class="num">
+      <span class="day-number">
         ${date.getDate()}
       </span>
 
-      ${
-        shift
-        ? `
-          <span class="shift-label">
-            ${shift}
-          </span>
-        `
-        : ""
-      }
+      ${shiftHTML}
 
-      ${tag}
+      <div class="day-request-area">
 
-      ${countTag}
+        ${tag}
 
-      ${specialDate}
+        ${countTag}
+
+        ${specialDate}
+
+      </div>
     `;
 
 
@@ -1912,7 +2068,7 @@ function renderCurrentList(){
 
 
 /* =========================================================
-   未來所有預假
+   未來預假
 ========================================================= */
 
 function renderFutureList(){
@@ -1925,6 +2081,7 @@ function renderFutureList(){
 
   const today=
     new Date();
+
 
   today.setHours(
     0,0,0,0
@@ -1959,9 +2116,13 @@ function renderFutureList(){
       if(entries.length){
 
         groups.push({
+
           cycle:c,
+
           index:index,
+
           entries:entries
+
         });
       }
     }
@@ -2036,7 +2197,6 @@ function renderFutureList(){
             </div>
 
           </div>
-
         `;
       }
     )
@@ -2045,7 +2205,7 @@ function renderFutureList(){
 
 
 /* =========================================================
-   單筆預假 UI
+   單筆預假
 ========================================================= */
 
 function requestRow(
@@ -2151,7 +2311,7 @@ function requestRow(
 
 
 /* =========================================================
-   開啟預假編輯
+   開啟編輯
 ========================================================= */
 
 function openEdit(
@@ -2367,7 +2527,7 @@ function renderPointGrid(){
 
 
 /* =========================================================
-   一般 / 特殊
+   一般 / 特殊 Tab
 ========================================================= */
 
 function setTab(type){
