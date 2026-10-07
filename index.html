@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>四週期護理排班預假 V0.2</title>
+<title>四週期護理排班預假 V0.3</title>
 
 <style>
 :root{
@@ -11,9 +11,17 @@
   color:#18212f;
   background:#f5f7fb;
 }
+
 *{box-sizing:border-box}
+
 body{margin:0}
-.wrap{max-width:760px;margin:auto;padding:16px}
+
+.wrap{
+  max-width:760px;
+  margin:auto;
+  padding:16px;
+}
+
 .card{
   background:#fff;
   border:1px solid #e5e9f0;
@@ -22,12 +30,29 @@ body{margin:0}
   margin-bottom:14px;
   box-shadow:0 3px 14px #0000000a;
 }
-h1,h2,h3,p{margin-top:0}
-.muted{color:#667085;font-size:14px}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.between{justify-content:space-between}
 
-button,select,input,textarea{font:inherit}
+h1,h2,h3,p{margin-top:0}
+
+.muted{
+  color:#667085;
+  font-size:14px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.between{
+  justify-content:space-between;
+}
+
+button,select,input,textarea{
+  font:inherit;
+}
+
 button{
   border:0;
   border-radius:12px;
@@ -36,10 +61,25 @@ button{
   background:#e9eef7;
   color:#172033;
 }
-.primary{background:#1769e0;color:#fff}
-.danger{color:#b42318}
-.ghost{background:#fff;border:1px solid #d8dee9}
-.small{padding:7px 10px;font-size:13px}
+
+.primary{
+  background:#1769e0;
+  color:#fff;
+}
+
+.danger{
+  color:#b42318;
+}
+
+.ghost{
+  background:#fff;
+  border:1px solid #d8dee9;
+}
+
+.small{
+  padding:7px 10px;
+  font-size:13px;
+}
 
 .status{
   padding:5px 9px;
@@ -48,87 +88,195 @@ button{
   color:#16763a;
   font-size:13px;
 }
-.points{font-size:28px;font-weight:700}
+
+.points{
+  font-size:28px;
+  font-weight:700;
+}
+
+/* ===== 月曆 ===== */
 
 .calendar{
   display:grid;
   grid-template-columns:repeat(7,1fr);
   gap:6px;
 }
+
 .dow{
   text-align:center;
   font-size:12px;
   color:#667085;
   padding:4px;
 }
+
 .day{
-  min-height:86px;
+  min-height:92px;
   background:#fff;
   border:1px solid #e2e7ef;
   border-radius:12px;
   padding:7px;
   cursor:pointer;
   overflow:hidden;
+  transition:.15s;
 }
-.day:hover{border-color:#8db7ef}
-.day .num{font-weight:700}
-.day .month{font-size:10px;color:#98a2b3}
 
-.tag{
-  font-size:11px;
-  margin-top:5px;
-  padding:3px 5px;
-  border-radius:7px;
-  background:#edf4ff;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.day:hover{
+  border-color:#8db7ef;
 }
-.tag.special{background:#f4eefe}
+
+.day.requested{
+  border-width:2px;
+}
+
+/* Prototype 班別顏色 */
+.day.shift-A{
+  background:#eaf4ff;
+  border-color:#91c4f2;
+}
+
+.day.shift-E{
+  background:#fff3dc;
+  border-color:#e9bd69;
+}
+
+.day.shift-N{
+  background:#eeeafd;
+  border-color:#aaa0dc;
+}
+
+.day.shift-unknown{
+  background:#f0f1f3;
+  border-color:#b9bec7;
+}
+
+.day .num{
+  font-weight:700;
+}
+
+.day .month{
+  display:block;
+  font-size:10px;
+  color:#98a2b3;
+  margin-bottom:1px;
+}
+
+.shift-label{
+  display:inline-block;
+  font-size:10px;
+  font-weight:700;
+  margin-left:3px;
+  color:#475467;
+}
+
+/* 自己的預假點數 */
+.tag{
+  display:inline-block;
+  font-size:12px;
+  font-weight:700;
+  margin-top:6px;
+  padding:3px 6px;
+  border-radius:7px;
+  background:#ffffffaa;
+}
+
+.tag.special{
+  background:#f4eefe;
+  font-weight:600;
+}
+
+.request-count{
+  font-size:10px;
+  color:#667085;
+  margin-top:4px;
+}
+
 .special-note{
   font-size:10px;
   color:#b42318;
   margin-top:4px;
 }
 
+/* ===== 我的預假 ===== */
+
 .request{
   padding:12px 0;
   border-top:1px solid #edf0f4;
 }
-.request:first-child{border-top:0}
-.request-title{font-weight:700}
+
+.request:first-child{
+  border-top:0;
+}
+
+.request-title{
+  font-weight:700;
+}
+
 .note{
   font-size:13px;
   color:#667085;
   margin-top:4px;
 }
 
-.tabs{display:flex;gap:6px;margin-bottom:14px}
-.tab.active{background:#1769e0;color:white}
+/* ===== Tabs ===== */
+
+.tabs{
+  display:flex;
+  gap:6px;
+  margin-bottom:14px;
+}
+
+.tab.active{
+  background:#1769e0;
+  color:white;
+}
+
+/* ===== 點數 ===== */
 
 .point-grid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:8px;
 }
-.point-btn.selected{background:#1769e0;color:#fff}
-.point-btn:disabled{opacity:.35;cursor:not-allowed}
 
-.field{margin:12px 0}
+.point-btn.selected{
+  background:#1769e0;
+  color:#fff;
+}
+
+.point-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+/* ===== 表單 ===== */
+
+.field{
+  margin:12px 0;
+}
+
 .field label{
   display:block;
   font-size:13px;
   font-weight:600;
   margin-bottom:6px;
 }
-.field input,.field select,.field textarea{
+
+.field input,
+.field select,
+.field textarea{
   width:100%;
   border:1px solid #d0d5dd;
   border-radius:10px;
   padding:10px;
   background:#fff;
 }
-.field textarea{min-height:76px;resize:vertical}
+
+.field textarea{
+  min-height:76px;
+  resize:vertical;
+}
+
+/* ===== Modal ===== */
 
 .modal{
   position:fixed;
@@ -139,7 +287,11 @@ button{
   justify-content:center;
   z-index:20;
 }
-.modal.show{display:flex}
+
+.modal.show{
+  display:flex;
+}
+
 .sheet{
   background:white;
   width:min(760px,100%);
@@ -149,153 +301,448 @@ button{
   padding:18px;
 }
 
-.login{max-width:430px;margin:8vh auto}
-.hidden{display:none!important}
-.cycle-nav select{flex:1;min-width:230px}
-.section-title{margin-bottom:8px}
+.login{
+  max-width:430px;
+  margin:8vh auto;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.cycle-nav select{
+  flex:1;
+  min-width:230px;
+}
+
 .empty{
   padding:18px;
   text-align:center;
   color:#98a2b3;
 }
-.info-btn{white-space:nowrap}
+
+.info-btn{
+  white-space:nowrap;
+}
+
+/* ===== 班別圖例 ===== */
+
+.legend{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  color:#667085;
+}
+
+.legend-color{
+  width:12px;
+  height:12px;
+  border-radius:4px;
+  border:1px solid #ccc;
+}
+
+.legend-A{background:#eaf4ff}
+.legend-E{background:#fff3dc}
+.legend-N{background:#eeeafd}
+.legend-U{background:#f0f1f3}
+
+/* ===== 手機 ===== */
 
 @media(max-width:560px){
-  .wrap{padding:10px}
-  .card{border-radius:15px;padding:13px}
-  .day{min-height:75px;padding:5px}
-  .calendar{gap:4px}
-  .tag{font-size:10px}
-  .cycle-nav button{padding:9px}
-  .points{font-size:24px}
+
+  .wrap{
+    padding:10px;
+  }
+
+  .card{
+    border-radius:15px;
+    padding:13px;
+  }
+
+  .calendar{
+    gap:4px;
+  }
+
+  .day{
+    min-height:82px;
+    padding:5px;
+  }
+
+  .tag{
+    font-size:11px;
+    padding:2px 4px;
+  }
+
+  .request-count{
+    font-size:9px;
+  }
+
+  .cycle-nav button{
+    padding:9px;
+  }
+
+  .points{
+    font-size:24px;
+  }
+
+  .shift-label{
+    font-size:9px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- ===== 登入 ===== -->
+
 <div id="loginView" class="wrap login">
+
   <div class="card">
+
     <h1>護理排班預假</h1>
-    <p class="muted">四週期預假系統 V0.2</p>
+
+    <p class="muted">
+      四週期預假系統 V0.3
+    </p>
 
     <div class="field">
+
       <label>員工編號</label>
-      <input id="employeeId" placeholder="Prototype 可任意輸入">
+
+      <input
+        id="employeeId"
+        placeholder="Prototype 可任意輸入">
+
     </div>
 
     <div class="field">
+
       <label>PIN</label>
-      <input id="pin" type="password" placeholder="Prototype 可任意輸入">
+
+      <input
+        id="pin"
+        type="password"
+        placeholder="Prototype 可任意輸入">
+
     </div>
 
-    <button class="primary" style="width:100%" onclick="login()">登入</button>
+    <button
+      class="primary"
+      style="width:100%"
+      onclick="login()">
+
+      登入
+
+    </button>
+
   </div>
+
 </div>
 
+
+<!-- ===== APP ===== -->
+
 <div id="appView" class="hidden">
+
 <div class="wrap">
 
-  <div class="row between" style="margin-bottom:12px">
+  <div
+    class="row between"
+    style="margin-bottom:12px">
+
     <div>
-      <strong>Hi，王小明 👋</strong>
-      <div class="muted">四週期護理排班預假</div>
-    </div>
-    <button class="ghost small" onclick="logout()">登出</button>
-  </div>
 
-  <div class="card">
-    <div class="row between">
-      <div>
-        <div class="muted">目前查看</div>
-        <h2 id="cycleTitle" style="margin:3px 0"></h2>
-        <div id="cycleRange" class="muted"></div>
+      <strong>
+        Hi，王小明 👋
+      </strong>
+
+      <div class="muted">
+        四週期護理排班預假
       </div>
 
-      <button class="ghost info-btn" onclick="openInfo()">
+    </div>
+
+    <button
+      class="ghost small"
+      onclick="logout()">
+
+      登出
+
+    </button>
+
+  </div>
+
+
+  <!-- ===== 四週期 ===== -->
+
+  <div class="card">
+
+    <div class="row between">
+
+      <div>
+
+        <div class="muted">
+          目前查看
+        </div>
+
+        <h2
+          id="cycleTitle"
+          style="margin:3px 0">
+        </h2>
+
+        <div
+          id="cycleRange"
+          class="muted">
+        </div>
+
+      </div>
+
+      <button
+        class="ghost info-btn"
+        onclick="openInfo()">
+
         ⓘ 填寫說明
+
       </button>
+
     </div>
 
-    <div class="row cycle-nav" style="margin-top:14px">
-      <button onclick="moveCycle(-1)">←</button>
 
-      <select id="cycleSelect" onchange="selectCycle(this.value)"></select>
+    <div
+      class="row cycle-nav"
+      style="margin-top:14px">
 
-      <button onclick="moveCycle(1)">→</button>
+      <button onclick="moveCycle(-1)">
+        ←
+      </button>
 
-      <button class="ghost small" onclick="goCurrent()">
+      <select
+        id="cycleSelect"
+        onchange="selectCycle(this.value)">
+      </select>
+
+      <button onclick="moveCycle(1)">
+        →
+      </button>
+
+      <button
+        class="ghost small"
+        onclick="goCurrent()">
+
         目前週期
+
       </button>
+
     </div>
+
   </div>
 
+
+  <!-- ===== 點數 ===== -->
+
   <div class="card">
+
     <div class="row between">
+
       <div>
-        <span class="status">開放預假</span>
-        <div class="muted" id="deadline" style="margin-top:8px"></div>
+
+        <span class="status">
+          開放預假
+        </span>
+
+        <div
+          class="muted"
+          id="deadline"
+          style="margin-top:8px">
+        </div>
+
+        <div
+          id="currentShiftInfo"
+          class="muted"
+          style="margin-top:6px">
+        </div>
+
       </div>
+
 
       <div style="text-align:right">
-        <div class="muted">已使用 / 本週期額度</div>
-        <div class="points">
-          <span id="usedPoints">0</span> /
-          <span id="limitPoints">9</span>
-        </div>
+
         <div class="muted">
-          剩餘 <span id="remainingPoints">9</span> 點
+          已使用 / 本週期額度
         </div>
+
+        <div class="points">
+
+          <span id="usedPoints">
+            0
+          </span>
+
+          /
+
+          <span id="limitPoints">
+            9
+          </span>
+
+        </div>
+
+        <div class="muted">
+
+          剩餘
+
+          <span id="remainingPoints">
+            9
+          </span>
+
+          點
+
+        </div>
+
       </div>
+
     </div>
+
   </div>
 
-  <div class="card">
-    <h3>四週期月曆</h3>
-    <div class="calendar" id="calendar"></div>
-  </div>
+
+  <!-- ===== 月曆 ===== -->
 
   <div class="card">
+
+    <h3>
+      四週期月曆
+    </h3>
+
+    <div
+      class="calendar"
+      id="calendar">
+    </div>
+
+
+    <div class="legend">
+
+      <div class="legend-item">
+        <span class="legend-color legend-A"></span>
+        A班預假
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color legend-E"></span>
+        E班預假
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color legend-N"></span>
+        N班預假
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color legend-U"></span>
+        班別未定
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===== 我的預假 ===== -->
+
+  <div class="card">
+
     <div class="row between">
-      <h3>本週期我的預假</h3>
-      <span id="submissionBadge" class="muted">草稿</span>
+
+      <h3>
+        本週期我的預假
+      </h3>
+
+      <span
+        id="submissionBadge"
+        class="muted">
+
+        草稿
+
+      </span>
+
     </div>
 
-    <div id="requestList"></div>
+    <div id="requestList">
+    </div>
 
     <button
       id="confirmBtn"
       class="primary"
       style="width:100%;margin-top:12px"
       onclick="confirmSubmission()">
+
       確認並送出預假
+
     </button>
+
   </div>
 
 </div>
+
 </div>
 
-<div id="editModal" class="modal">
+
+<!-- ===== 預假編輯 ===== -->
+
+<div
+  id="editModal"
+  class="modal">
+
 <div class="sheet">
 
   <div class="row between">
-    <h3 id="modalDate">預假</h3>
-    <button class="ghost small" onclick="closeModal('editModal')">
+
+    <h3 id="modalDate">
+      預假
+    </h3>
+
+    <button
+      class="ghost small"
+      onclick="closeModal('editModal')">
+
       關閉
+
     </button>
+
   </div>
+
 
   <div class="tabs">
-    <button id="generalTab" class="tab active"
+
+    <button
+      id="generalTab"
+      class="tab active"
       onclick="setTab('general')">
+
       一般預假
+
     </button>
 
-    <button id="specialTab" class="tab"
+    <button
+      id="specialTab"
+      class="tab"
       onclick="setTab('special')">
+
       特殊預假
+
     </button>
+
   </div>
+
+
+  <!-- 一般預假 -->
 
   <div id="generalPane">
 
@@ -303,176 +750,508 @@ button{
       選擇點數（0 點也代表希望休假）
     </div>
 
-    <div id="pointGrid"
+    <div
+      id="selectedShiftDisplay"
+      class="muted"
+      style="margin-top:6px">
+    </div>
+
+    <div
+      id="pointGrid"
       class="point-grid"
       style="margin-top:10px">
     </div>
 
+
     <div class="field">
-      <label>備註（選填）</label>
+
+      <label>
+        備註（選填）
+      </label>
+
       <textarea
         id="generalNote"
         maxlength="200"
-        placeholder="例如：家庭活動、已訂行程…">
-      </textarea>
+        placeholder="例如：家庭活動、已訂行程…"></textarea>
+
     </div>
 
+
     <div class="row">
-      <button class="primary" onclick="saveGeneral()">儲存</button>
-      <button class="ghost danger" onclick="deleteCurrent()">
-        刪除此日預假
+
+      <button
+        class="primary"
+        onclick="saveGeneral()">
+
+        儲存
+
       </button>
+
+      <button
+        class="ghost danger"
+        onclick="deleteCurrent()">
+
+        刪除此日預假
+
+      </button>
+
     </div>
 
   </div>
 
-  <div id="specialPane" class="hidden">
+
+  <!-- 特殊預假 -->
+
+  <div
+    id="specialPane"
+    class="hidden">
 
     <div class="field">
-      <label>特殊預假類型</label>
+
+      <label>
+        特殊預假類型
+      </label>
+
       <select id="specialType">
+
         <option>年休週</option>
         <option>婚假</option>
         <option>公假</option>
         <option>其他</option>
+
       </select>
+
     </div>
 
-    <div class="field">
-      <label>結束日期</label>
-      <input id="specialEnd" type="date">
-    </div>
 
     <div class="field">
-      <label>備註（選填）</label>
-      <textarea id="specialNote" maxlength="200"></textarea>
+
+      <label>
+        結束日期
+      </label>
+
+      <input
+        id="specialEnd"
+        type="date">
+
     </div>
+
+
+    <div class="field">
+
+      <label>
+        備註（選填）
+      </label>
+
+      <textarea
+        id="specialNote"
+        maxlength="200">
+      </textarea>
+
+    </div>
+
 
     <label class="muted">
-      <input id="specialApproved" type="checkbox">
+
+      <input
+        id="specialApproved"
+        type="checkbox">
+
       我確認此特殊預假已完成相關核准程序
+
     </label>
 
-    <div class="row" style="margin-top:14px">
-      <button class="primary" onclick="saveSpecial()">
+
+    <div
+      class="row"
+      style="margin-top:14px">
+
+      <button
+        class="primary"
+        onclick="saveSpecial()">
+
         儲存特殊預假
+
       </button>
-      <button class="ghost danger" onclick="deleteCurrent()">
+
+      <button
+        class="ghost danger"
+        onclick="deleteCurrent()">
+
         刪除
+
       </button>
+
     </div>
 
   </div>
 
 </div>
+
 </div>
 
-<div id="infoModal" class="modal">
+
+<!-- ===== 填寫說明 ===== -->
+
+<div
+  id="infoModal"
+  class="modal">
+
 <div class="sheet">
 
   <div class="row between">
-    <h3>預假填寫說明</h3>
-    <button class="ghost small" onclick="closeModal('infoModal')">
+
+    <h3>
+      預假填寫說明
+    </h3>
+
+    <button
+      class="ghost small"
+      onclick="closeModal('infoModal')">
+
       關閉
+
     </button>
+
   </div>
 
+
   <p>
-    <strong>一般預假</strong><br>
-    每個四週期都有獨立點數額度，預設為 9 點；
+
+    <strong>
+      一般預假
+    </strong>
+
+    <br>
+
+    每個四週期都有獨立點數額度，
+    預設為 9 點；
     實際額度依該週期設定為準。
-    點數越高，代表該日期對你的重要程度越高。
+
+    點數越高，
+    代表該日期對你的重要程度越高。
+
   </p>
 
-  <p>
-    <strong>0 點預假</strong><br>
-    代表希望該日休假，但不投入優先點數。
-  </p>
 
   <p>
-    <strong>特殊預假</strong><br>
+
+    <strong>
+      0 點預假
+    </strong>
+
+    <br>
+
+    代表希望該日休假，
+    但不投入優先點數。
+
+  </p>
+
+
+  <p>
+
+    <strong>
+      班別
+    </strong>
+
+    <br>
+
+    A、E、N 班別依月份設定。
+
+    同一個四週期若跨越月份，
+    可能同時出現不同班別。
+
+    尚未設定班別的未來月份，
+    會顯示為班別未定。
+
+  </p>
+
+
+  <p>
+
+    <strong>
+      特殊預假
+    </strong>
+
+    <br>
+
     包含年休週、婚假、公假及其他特殊假別。
-    正式版的類型將由管理員設定。
+
   </p>
 
-  <p>
-    <strong>備註</strong><br>
-    可填寫規劃原因供自己與排班人員參考，
-    其他一般同仁不會看到備註。
-  </p>
 
   <p>
-    <strong>修改</strong><br>
+
+    <strong>
+      備註
+    </strong>
+
+    <br>
+
+    可填寫規劃原因供自己與排班人員參考。
+
+    備註不會顯示在月曆格內，
+    也不會公開給其他一般同仁。
+
+  </p>
+
+
+  <p>
+
+    <strong>
+      修改
+    </strong>
+
+    <br>
+
     週期開放期間可修改或刪除。
-    若已確認送出後再次修改，狀態會回到「草稿」，
+
+    若已確認送出後再次修改，
+    狀態會回到「草稿」，
     需要再次確認送出。
+
   </p>
 
-  <button class="primary" style="width:100%"
+
+  <button
+    class="primary"
+    style="width:100%"
     onclick="closeModal('infoModal')">
+
     我知道了
+
   </button>
 
 </div>
+
 </div>
+
 
 <script>
 
+/* =========================================================
+   日期工具
+========================================================= */
+
 function localKey(d){
+
   const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,'0');
-  const day=String(d.getDate()).padStart(2,'0');
+
+  const m=
+    String(d.getMonth()+1)
+    .padStart(2,'0');
+
+  const day=
+    String(d.getDate())
+    .padStart(2,'0');
+
   return `${y}-${m}-${day}`;
 }
 
+
 function parseKey(k){
-  const [y,m,d]=k.split('-').map(Number);
-  return new Date(y,m-1,d);
+
+  const [y,m,d]=
+    k.split('-').map(Number);
+
+  return new Date(
+    y,
+    m-1,
+    d
+  );
 }
 
+
 function addDays(d,n){
-  const x=new Date(d);
-  x.setDate(x.getDate()+n);
+
+  const x=
+    new Date(d);
+
+  x.setDate(
+    x.getDate()+n
+  );
+
   return x;
 }
 
+
 function fmt(d){
+
   return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
 }
 
-/* ===== 四週期設定 ===== */
 
-const baseStart=new Date(2026,10,23);
+function monthKey(date){
+
+  const y=
+    date.getFullYear();
+
+  const m=
+    String(date.getMonth()+1)
+    .padStart(2,"0");
+
+  return `${y}-${m}`;
+}
+
+
+/* =========================================================
+   Prototype 後台設定
+========================================================= */
+
+/*
+  true：
+  護理師看得到每天有多少人預假
+
+  false：
+  完全不顯示人數
+
+  未來這個會由 Admin 後台設定
+*/
+
+const showRequestCount=true;
+
+
+/* =========================================================
+   Prototype 每月班別假資料
+========================================================= */
+
+/*
+  重要：
+  班別是依「月份」，
+  不是依四週期。
+
+  所以同一四週期跨月份時，
+  可能出現兩個不同班別。
+*/
+
+const monthlyShifts={
+
+  "2026-11":"A",
+
+  "2026-12":"E",
+
+  "2027-01":"N"
+
+};
+
+
+function getShift(date){
+
+  return monthlyShifts[
+    monthKey(date)
+  ] || null;
+}
+
+
+/* =========================================================
+   Prototype 每日總預假人數假資料
+========================================================= */
+
+const requestCounts={
+
+  "2026-11-24":8,
+
+  "2026-11-25":3,
+
+  "2026-11-26":6,
+
+  "2026-12-05":12,
+
+  "2026-12-15":7,
+
+  "2027-01-03":10
+
+};
+
+
+function getRequestCount(key){
+
+  return requestCounts[key] || 0;
+}
+
+
+/* =========================================================
+   四週期
+========================================================= */
+
+const baseStart=
+  new Date(
+    2026,
+    10,
+    23
+  );
+
 
 const cycles=[];
 
-/* Prototype 先自動產生前後很多個四週期 */
-for(let i=-13;i<40;i++){
 
-  const start=addDays(baseStart,i*28);
-  const end=addDays(start,27);
+/*
+  Prototype 自動產生
+  前後多個四週期
+*/
+
+for(
+  let i=-13;
+  i<40;
+  i++
+){
+
+  const start=
+    addDays(
+      baseStart,
+      i*28
+    );
+
+  const end=
+    addDays(
+      start,
+      27
+    );
 
   cycles.push({
+
     id:i,
+
     start:start,
+
     end:end,
 
-    /* 預設每週期 9 點 */
-    pointLimit:i===3 ? 12 : 9,
+    /*
+      預設 9 點。
+
+      故意讓其中一個週期
+      變成 12 點，
+      測試不同週期點數。
+    */
+    pointLimit:
+      i===3
+      ? 12
+      : 9,
 
     open:true,
 
-    deadline:addDays(start,-13)
+    deadline:
+      addDays(
+        start,
+        -13
+      )
+
   });
+
 }
 
+
 /*
-  上面特別讓其中一個未來週期變成 12 點，
-  是為了讓你測試：
-  每個週期確實可以有不同點數。
+  baseStart 那一個週期
+  在 cycles 陣列中的位置
 */
 
 let currentIndex=13;
+
+
+/* =========================================================
+   Prototype 資料
+========================================================= */
 
 let requests={};
 
@@ -484,57 +1263,119 @@ let selectedPoints=0;
 
 let activeTab="general";
 
-/* ===== 登入 ===== */
+
+/* =========================================================
+   登入
+========================================================= */
 
 function login(){
 
   document
-    .getElementById("loginView")
-    .classList.add("hidden");
+    .getElementById(
+      "loginView"
+    )
+    .classList
+    .add("hidden");
+
 
   document
-    .getElementById("appView")
-    .classList.remove("hidden");
+    .getElementById(
+      "appView"
+    )
+    .classList
+    .remove("hidden");
+
 
   renderAll();
+
 }
+
 
 function logout(){
 
   document
-    .getElementById("appView")
-    .classList.add("hidden");
+    .getElementById(
+      "appView"
+    )
+    .classList
+    .add("hidden");
+
 
   document
-    .getElementById("loginView")
-    .classList.remove("hidden");
+    .getElementById(
+      "loginView"
+    )
+    .classList
+    .remove("hidden");
+
 }
 
-/* ===== 四週期 ===== */
+
+/* =========================================================
+   四週期工具
+========================================================= */
 
 function cycle(){
-  return cycles[currentIndex];
+
+  return cycles[
+    currentIndex
+  ];
+
 }
 
+
 function cycleKey(){
-  return localKey(cycle().start);
+
+  return localKey(
+    cycle().start
+  );
+
 }
+
 
 function reqs(){
 
-  if(!requests[cycleKey()]){
-    requests[cycleKey()]={};
+  if(
+    !requests[
+      cycleKey()
+    ]
+  ){
+
+    requests[
+      cycleKey()
+    ]={};
+
   }
 
-  return requests[cycleKey()];
+  return requests[
+    cycleKey()
+  ];
+
 }
+
 
 function used(){
 
-  return Object.values(reqs())
-    .filter(r=>r.type==="general")
-    .reduce((sum,r)=>sum+r.points,0);
+  return Object
+    .values(
+      reqs()
+    )
+    .filter(
+      r=>
+        r.type==="general"
+    )
+    .reduce(
+      (sum,r)=>
+        sum+r.points,
+      0
+    );
+
 }
+
+
+/* =========================================================
+   Render
+========================================================= */
 
 function renderAll(){
 
@@ -545,180 +1386,487 @@ function renderAll(){
   renderCalendar();
 
   renderList();
+
 }
+
+
+/* =========================================================
+   四週期選擇
+========================================================= */
 
 function renderCycleSelect(){
 
-  const select=document.getElementById("cycleSelect");
+  const select=
+    document
+    .getElementById(
+      "cycleSelect"
+    );
 
-  select.innerHTML=cycles.map((c,i)=>{
 
-    return `
-      <option value="${i}"
-        ${i===currentIndex ? "selected" : ""}>
-        ${fmt(c.start)} ～ ${fmt(c.end)}
-      </option>
-    `;
+  select.innerHTML=
+    cycles
+    .map(
+      (c,i)=>{
 
-  }).join("");
+        return `
+          <option
+            value="${i}"
+            ${
+              i===currentIndex
+              ? "selected"
+              : ""
+            }>
+
+            ${fmt(c.start)}
+            ～
+            ${fmt(c.end)}
+
+          </option>
+        `;
+
+      }
+    )
+    .join("");
+
 }
+
 
 function renderSummary(){
 
-  const c=cycle();
+  const c=
+    cycle();
 
-  document.getElementById("cycleTitle").textContent=
-    `四週期 ${fmt(c.start)} 起`;
 
-  document.getElementById("cycleRange").textContent=
-    `${fmt(c.start)} ～ ${fmt(c.end)}`;
+  document
+    .getElementById(
+      "cycleTitle"
+    )
+    .textContent=
+      `四週期 ${fmt(c.start)} 起`;
 
-  document.getElementById("deadline").textContent=
-    `預假截止：${fmt(c.deadline)} 23:59`;
 
-  document.getElementById("limitPoints").textContent=
-    c.pointLimit;
+  document
+    .getElementById(
+      "cycleRange"
+    )
+    .textContent=
+      `${fmt(c.start)} ～ ${fmt(c.end)}`;
 
-  document.getElementById("usedPoints").textContent=
-    used();
 
-  document.getElementById("remainingPoints").textContent=
-    c.pointLimit-used();
+  document
+    .getElementById(
+      "deadline"
+    )
+    .textContent=
+      `預假截止：${fmt(c.deadline)} 23:59`;
+
+
+  document
+    .getElementById(
+      "limitPoints"
+    )
+    .textContent=
+      c.pointLimit;
+
+
+  document
+    .getElementById(
+      "usedPoints"
+    )
+    .textContent=
+      used();
+
+
+  document
+    .getElementById(
+      "remainingPoints"
+    )
+    .textContent=
+      c.pointLimit-used();
+
+
+  /*
+    顯示這個四週期
+    涉及哪些月份班別
+  */
+
+  const shifts=[];
+
+  for(
+    let i=0;
+    i<28;
+    i++
+  ){
+
+    const date=
+      addDays(
+        c.start,
+        i
+      );
+
+    const mk=
+      monthKey(date);
+
+    const shift=
+      getShift(date);
+
+    const label=
+      shift
+      ? `${mk.replace("-","/")}：${shift}`
+      : `${mk.replace("-","/")}：未定`;
+
+
+    if(
+      !shifts.includes(label)
+    ){
+
+      shifts.push(label);
+
+    }
+
+  }
+
+
+  document
+    .getElementById(
+      "currentShiftInfo"
+    )
+    .textContent=
+      `班別：${shifts.join("　")}`;
+
 
   const confirmed=
-    submissions[cycleKey()]===true;
+    submissions[
+      cycleKey()
+    ]===true;
 
-  document.getElementById("submissionBadge").textContent=
-    confirmed ? "✓ 已確認送出" : "草稿";
 
-  document.getElementById("confirmBtn").textContent=
-    confirmed ? "✓ 已確認送出" : "確認並送出預假";
+  document
+    .getElementById(
+      "submissionBadge"
+    )
+    .textContent=
+      confirmed
+      ? "✓ 已確認送出"
+      : "草稿";
+
+
+  document
+    .getElementById(
+      "confirmBtn"
+    )
+    .textContent=
+      confirmed
+      ? "✓ 已確認送出"
+      : "確認並送出預假";
+
 }
+
 
 function moveCycle(n){
 
-  currentIndex=Math.max(
-    0,
-    Math.min(
-      cycles.length-1,
-      currentIndex+n
-    )
-  );
+  currentIndex=
+    Math.max(
+      0,
+      Math.min(
+        cycles.length-1,
+        currentIndex+n
+      )
+    );
+
 
   renderAll();
+
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
+
 }
+
 
 function selectCycle(value){
 
-  currentIndex=Number(value);
+  currentIndex=
+    Number(value);
 
   renderAll();
+
 }
+
 
 function goCurrent(){
 
   currentIndex=13;
 
   renderAll();
+
 }
 
-/* ===== 月曆 ===== */
+
+/* =========================================================
+   月曆
+========================================================= */
 
 function renderCalendar(){
 
   const calendar=
-    document.getElementById("calendar");
+    document
+    .getElementById(
+      "calendar"
+    );
+
 
   calendar.innerHTML=
-    ["一","二","三","四","五","六","日"]
-    .map(x=>`<div class="dow">${x}</div>`)
+    [
+      "一",
+      "二",
+      "三",
+      "四",
+      "五",
+      "六",
+      "日"
+    ]
+    .map(
+      x=>
+        `<div class="dow">${x}</div>`
+    )
     .join("");
 
-  const data=reqs();
 
-  for(let i=0;i<28;i++){
+  const data=
+    reqs();
 
-    const date=addDays(cycle().start,i);
 
-    const key=localKey(date);
+  for(
+    let i=0;
+    i<28;
+    i++
+  ){
 
-    const request=data[key];
+    const date=
+      addDays(
+        cycle().start,
+        i
+      );
 
-    const cell=document.createElement("div");
 
-    cell.className="day";
+    const key=
+      localKey(date);
+
+
+    const request=
+      data[key];
+
+
+    const shift=
+      getShift(date);
+
+
+    const cell=
+      document
+      .createElement(
+        "div"
+      );
+
+
+    cell.className=
+      "day";
+
+
+    /*
+      只有「我有預假」
+      才整格變色。
+    */
+
+    if(request){
+
+      cell.classList
+        .add(
+          "requested"
+        );
+
+
+      if(shift){
+
+        cell.classList
+          .add(
+            `shift-${shift}`
+          );
+
+      }else{
+
+        cell.classList
+          .add(
+            "shift-unknown"
+          );
+
+      }
+
+    }
+
+
+    /*
+      自己的預假
+    */
 
     let tag="";
 
-    if(request?.type==="general"){
+
+    if(
+      request?.type
+      ===
+      "general"
+    ){
 
       tag=`
         <div class="tag">
-          ★ ${request.points} 點
-          ${request.note
-            ? " · "+escapeHtml(request.note)
-            : ""}
+          ${request.points}⭐
         </div>
       `;
+
     }
 
-    if(request?.type==="special"){
+
+    if(
+      request?.type
+      ===
+      "special"
+    ){
 
       tag=`
         <div class="tag special">
-          ${escapeHtml(request.specialType)}
+          ${escapeHtml(
+            request.specialType
+          )}
         </div>
       `;
+
     }
+
+
+    /*
+      每日總預假人數
+    */
+
+    let countTag="";
+
+
+    if(showRequestCount){
+
+      const count=
+        getRequestCount(
+          key
+        );
+
+
+      if(count>0){
+
+        countTag=`
+          <div class="request-count">
+            👥 ${count}
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    /*
+      特殊日期 Prototype
+    */
 
     let specialDate="";
 
-    if(key==="2026-12-15"){
+
+    if(
+      key==="2026-12-15"
+    ){
 
       specialDate=`
         <div class="special-note">
           ● 教育訓練
         </div>
       `;
+
     }
 
+
     cell.innerHTML=`
+
       <span class="month">
         ${date.getMonth()+1}月
       </span>
+
 
       <span class="num">
         ${date.getDate()}
       </span>
 
+
+      ${
+        shift
+        ? `
+          <span class="shift-label">
+            ${shift}
+          </span>
+        `
+        : ""
+      }
+
+
       ${tag}
 
+      ${countTag}
+
       ${specialDate}
+
     `;
 
-    cell.onclick=()=>openEdit(key);
 
-    calendar.appendChild(cell);
+    cell.onclick=
+      ()=>openEdit(key);
+
+
+    calendar
+      .appendChild(
+        cell
+      );
+
   }
+
 }
 
-/* ===== 我的預假 ===== */
+
+/* =========================================================
+   我的預假
+========================================================= */
 
 function renderList(){
 
   const box=
-    document.getElementById("requestList");
+    document
+    .getElementById(
+      "requestList"
+    );
+
 
   const entries=
-    Object.entries(reqs())
-    .sort(([a],[b])=>a.localeCompare(b));
+    Object
+    .entries(
+      reqs()
+    )
+    .sort(
+      ([a],[b])=>
+        a.localeCompare(b)
+    );
 
-  if(!entries.length){
+
+  if(
+    !entries.length
+  ){
 
     box.innerHTML=`
       <div class="empty">
@@ -727,100 +1875,206 @@ function renderList(){
     `;
 
     return;
+
   }
 
-  box.innerHTML=entries.map(([key,r])=>{
 
-    const title=
-      r.type==="general"
-      ? `一般預假 · ${r.points} 點`
-      : escapeHtml(r.specialType);
+  box.innerHTML=
+    entries
+    .map(
+      ([key,r])=>{
 
-    const note=
-      r.note
-      ? `<div class="note">
-           備註：${escapeHtml(r.note)}
-         </div>`
-      : "";
+        const date=
+          parseKey(key);
 
-    return `
-      <div class="request">
 
-        <div class="row between">
+        const shift=
+          getShift(date);
 
-          <div>
 
-            <div class="request-title">
-              ${fmt(parseKey(key))}
-             　${title}
+        const shiftText=
+          shift
+          ? `${shift}班`
+          : "班別未定";
+
+
+        const title=
+          r.type==="general"
+          ? `一般預假 · ${r.points} 點`
+          : escapeHtml(
+              r.specialType
+            );
+
+
+        const note=
+          r.note
+          ? `
+            <div class="note">
+              備註：
+              ${escapeHtml(r.note)}
+            </div>
+          `
+          : "";
+
+
+        return `
+
+          <div class="request">
+
+            <div class="row between">
+
+              <div>
+
+                <div class="request-title">
+
+                  ${fmt(date)}
+
+                  　
+
+                  ${title}
+
+                </div>
+
+
+                <div class="note">
+
+                  ${shiftText}
+
+                </div>
+
+
+                ${note}
+
+              </div>
+
+
+              <div class="row">
+
+                <button
+                  class="ghost small"
+                  onclick="openEdit('${key}')">
+
+                  修改
+
+                </button>
+
+
+                <button
+                  class="ghost small danger"
+                  onclick="deleteByKey('${key}')">
+
+                  刪除
+
+                </button>
+
+              </div>
+
             </div>
 
-            ${note}
-
           </div>
 
-          <div class="row">
+        `;
 
-            <button
-              class="ghost small"
-              onclick="openEdit('${key}')">
-              修改
-            </button>
+      }
+    )
+    .join("");
 
-            <button
-              class="ghost small danger"
-              onclick="deleteByKey('${key}')">
-              刪除
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
 }
 
-/* ===== 編輯預假 ===== */
+
+/* =========================================================
+   編輯預假
+========================================================= */
 
 function openEdit(key){
 
-  selectedDate=key;
-
-  const request=reqs()[key];
-
-  document.getElementById("modalDate").textContent=
-    `${fmt(parseKey(key))} 預假`;
-
-  document.getElementById("specialEnd").value=
+  selectedDate=
     key;
 
-  document.getElementById("generalNote").value=
-    request?.type==="general"
-    ? request.note || ""
-    : "";
 
-  document.getElementById("specialNote").value=
-    request?.type==="special"
-    ? request.note || ""
-    : "";
+  const request=
+    reqs()[key];
 
-  document.getElementById("specialType").value=
-    request?.type==="special"
-    ? request.specialType
-    : "年休週";
 
-  document.getElementById("specialApproved").checked=
-    request?.type==="special"
-    ? !!request.approved
-    : false;
+  const date=
+    parseKey(key);
+
+
+  const shift=
+    getShift(date);
+
+
+  document
+    .getElementById(
+      "modalDate"
+    )
+    .textContent=
+      `${fmt(date)} 預假`;
+
+
+  document
+    .getElementById(
+      "selectedShiftDisplay"
+    )
+    .textContent=
+      shift
+      ? `本日班別：${shift}`
+      : "本日班別：尚未設定";
+
+
+  document
+    .getElementById(
+      "specialEnd"
+    )
+    .value=
+      key;
+
+
+  document
+    .getElementById(
+      "generalNote"
+    )
+    .value=
+      request?.type==="general"
+      ? request.note || ""
+      : "";
+
+
+  document
+    .getElementById(
+      "specialNote"
+    )
+    .value=
+      request?.type==="special"
+      ? request.note || ""
+      : "";
+
+
+  document
+    .getElementById(
+      "specialType"
+    )
+    .value=
+      request?.type==="special"
+      ? request.specialType
+      : "年休週";
+
+
+  document
+    .getElementById(
+      "specialApproved"
+    )
+    .checked=
+      request?.type==="special"
+      ? !!request.approved
+      : false;
+
 
   selectedPoints=
     request?.type==="general"
     ? request.points
     : 0;
+
 
   setTab(
     request?.type==="special"
@@ -828,34 +2082,55 @@ function openEdit(key){
     : "general"
   );
 
+
   renderPointGrid();
 
+
   document
-    .getElementById("editModal")
-    .classList.add("show");
+    .getElementById(
+      "editModal"
+    )
+    .classList
+    .add("show");
+
 }
 
-/* ===== 點數 ===== */
+
+/* =========================================================
+   點數
+========================================================= */
 
 function renderPointGrid(){
 
   const existing=
-    reqs()[selectedDate];
+    reqs()[
+      selectedDate
+    ];
+
 
   const credit=
     existing?.type==="general"
     ? existing.points
     : 0;
 
+
   const max=
     cycle().pointLimit
-    - used()
-    + credit;
+    -
+    used()
+    +
+    credit;
+
 
   const grid=
-    document.getElementById("pointGrid");
+    document
+    .getElementById(
+      "pointGrid"
+    );
+
 
   grid.innerHTML="";
+
 
   for(
     let point=0;
@@ -864,135 +2139,232 @@ function renderPointGrid(){
   ){
 
     const button=
-      document.createElement("button");
+      document
+      .createElement(
+        "button"
+      );
+
 
     button.className=
       "point-btn"
-      +(point===selectedPoints
+      +
+      (
+        point===selectedPoints
         ? " selected"
-        : "");
+        : ""
+      );
 
-    button.textContent=point;
+
+    button.textContent=
+      point;
+
 
     button.disabled=
       point>max;
 
-    button.onclick=()=>{
 
-      selectedPoints=point;
+    button.onclick=
+      ()=>{
 
-      renderPointGrid();
-    };
+        selectedPoints=
+          point;
 
-    grid.appendChild(button);
+        renderPointGrid();
+
+      };
+
+
+    grid
+      .appendChild(
+        button
+      );
+
   }
+
 }
 
-/* ===== 一般 / 特殊 ===== */
+
+/* =========================================================
+   一般 / 特殊 Tab
+========================================================= */
 
 function setTab(type){
 
-  activeTab=type;
+  activeTab=
+    type;
+
 
   document
-    .getElementById("generalPane")
-    .classList.toggle(
+    .getElementById(
+      "generalPane"
+    )
+    .classList
+    .toggle(
       "hidden",
       type!=="general"
     );
 
+
   document
-    .getElementById("specialPane")
-    .classList.toggle(
+    .getElementById(
+      "specialPane"
+    )
+    .classList
+    .toggle(
       "hidden",
       type!=="special"
     );
 
+
   document
-    .getElementById("generalTab")
-    .classList.toggle(
+    .getElementById(
+      "generalTab"
+    )
+    .classList
+    .toggle(
       "active",
       type==="general"
     );
 
+
   document
-    .getElementById("specialTab")
-    .classList.toggle(
+    .getElementById(
+      "specialTab"
+    )
+    .classList
+    .toggle(
       "active",
       type==="special"
     );
+
 }
+
 
 function markDraft(){
 
-  submissions[cycleKey()]=false;
+  submissions[
+    cycleKey()
+  ]=false;
+
 }
 
-/* ===== 儲存一般預假 ===== */
+
+/* =========================================================
+   儲存一般預假
+========================================================= */
 
 function saveGeneral(){
 
-  reqs()[selectedDate]={
+  reqs()[
+    selectedDate
+  ]={
+
     type:"general",
-    points:selectedPoints,
+
+    points:
+      selectedPoints,
+
     note:
       document
-      .getElementById("generalNote")
+      .getElementById(
+        "generalNote"
+      )
       .value
       .trim()
+
   };
+
 
   markDraft();
 
-  closeModal("editModal");
+
+  closeModal(
+    "editModal"
+  );
+
 
   renderAll();
+
 }
 
-/* ===== 儲存特殊預假 ===== */
+
+/* =========================================================
+   儲存特殊預假
+========================================================= */
 
 function saveSpecial(){
 
   const end=
     document
-    .getElementById("specialEnd")
+    .getElementById(
+      "specialEnd"
+    )
     .value;
 
-  if(!end || end<selectedDate){
 
-    alert("結束日期不能早於開始日期");
+  if(
+    !end
+    ||
+    end<selectedDate
+  ){
+
+    alert(
+      "結束日期不能早於開始日期"
+    );
 
     return;
+
   }
+
 
   const type=
     document
-    .getElementById("specialType")
+    .getElementById(
+      "specialType"
+    )
     .value;
+
 
   const note=
     document
-    .getElementById("specialNote")
+    .getElementById(
+      "specialNote"
+    )
     .value
     .trim();
 
+
   const approved=
     document
-    .getElementById("specialApproved")
+    .getElementById(
+      "specialApproved"
+    )
     .checked;
 
-  let date=parseKey(selectedDate);
 
-  const last=parseKey(end);
+  let date=
+    parseKey(
+      selectedDate
+    );
 
-  while(date<=last){
 
-    const key=localKey(date);
+  const last=
+    parseKey(end);
+
+
+  while(
+    date<=last
+  ){
+
+    const key=
+      localKey(date);
+
 
     /*
       Prototype 目前只寫入
-      正在查看的四週期範圍。
+      正在查看的四週期。
     */
+
     if(
       date>=cycle().start
       &&
@@ -1000,43 +2372,78 @@ function saveSpecial(){
     ){
 
       reqs()[key]={
+
         type:"special",
+
         specialType:type,
+
         note:note,
+
         approved:approved,
-        rangeStart:selectedDate,
-        rangeEnd:end
+
+        rangeStart:
+          selectedDate,
+
+        rangeEnd:
+          end
+
       };
+
     }
 
-    date=addDays(date,1);
+
+    date=
+      addDays(
+        date,
+        1
+      );
+
   }
+
 
   markDraft();
 
-  closeModal("editModal");
+
+  closeModal(
+    "editModal"
+  );
+
 
   renderAll();
+
 }
 
-/* ===== 刪除 ===== */
+
+/* =========================================================
+   刪除
+========================================================= */
 
 function deleteCurrent(){
 
-  deleteByKey(selectedDate);
+  deleteByKey(
+    selectedDate
+  );
 
-  closeModal("editModal");
+
+  closeModal(
+    "editModal"
+  );
+
 }
+
 
 function deleteByKey(key){
 
-  const request=reqs()[key];
+  const request=
+    reqs()[key];
+
 
   /*
-    如果是特殊預假的日期區間，
+    特殊預假：
     刪除其中一天時，
-    Prototype 會刪除整段。
+    Prototype 刪除整段。
   */
+
   if(
     request?.type==="special"
     &&
@@ -1044,76 +2451,121 @@ function deleteByKey(key){
   ){
 
     for(
-      const [dateKey,item]
-      of Object.entries(reqs())
+      const [
+        dateKey,
+        item
+      ]
+      of
+      Object.entries(
+        reqs()
+      )
     ){
 
       if(
         item.type==="special"
         &&
-        item.rangeStart===request.rangeStart
+        item.rangeStart
+          ===
+        request.rangeStart
         &&
-        item.rangeEnd===request.rangeEnd
+        item.rangeEnd
+          ===
+        request.rangeEnd
       ){
 
-        delete reqs()[dateKey];
+        delete reqs()[
+          dateKey
+        ];
+
       }
+
     }
 
   }else{
 
     delete reqs()[key];
+
   }
+
 
   markDraft();
 
   renderAll();
+
 }
 
-/* ===== 確認送出 ===== */
+
+/* =========================================================
+   確認送出
+========================================================= */
 
 function confirmSubmission(){
 
-  submissions[cycleKey()]=true;
+  submissions[
+    cycleKey()
+  ]=true;
+
 
   renderSummary();
+
 
   alert(
     "已確認送出這個四週期的預假。\n\n"+
     "截止前若再次修改，會自動回到草稿。"
   );
+
 }
 
-/* ===== 說明 ===== */
+
+/* =========================================================
+   說明
+========================================================= */
 
 function openInfo(){
 
   document
-    .getElementById("infoModal")
-    .classList.add("show");
+    .getElementById(
+      "infoModal"
+    )
+    .classList
+    .add("show");
+
 }
+
 
 function closeModal(id){
 
   document
     .getElementById(id)
-    .classList.remove("show");
+    .classList
+    .remove("show");
+
 }
 
-/* ===== 安全顯示文字 ===== */
+
+/* =========================================================
+   安全文字
+========================================================= */
 
 function escapeHtml(text=""){
 
   return text.replace(
     /[&<>'"]/g,
     char=>({
+
       "&":"&amp;",
+
       "<":"&lt;",
+
       ">":"&gt;",
+
       "'":"&#39;",
+
       '"':"&quot;"
+
     }[char])
   );
+
 }
 
 </script>
