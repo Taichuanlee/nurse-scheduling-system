@@ -1,0 +1,2504 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>預假資料｜Nurse Scheduling System</title>
+
+<style>
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#18212f;
+  background:#f5f7fb;
+}
+
+*{box-sizing:border-box}
+body{margin:0}
+button,input,select{font:inherit}
+
+button{
+  border:0;
+  border-radius:9px;
+  padding:9px 13px;
+  cursor:pointer;
+  background:#e9eef7;
+  color:#172033;
+}
+
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.primary{
+  background:#1769e0;
+  color:#fff;
+}
+
+.ghost{
+  background:#fff;
+  border:1px solid #d8dee9;
+}
+
+.small{
+  padding:6px 9px;
+  font-size:12px;
+}
+
+.muted{
+  color:#667085;
+  font-size:13px;
+}
+
+/* ======================================================
+   Layout
+====================================================== */
+
+.layout{
+  display:grid;
+  grid-template-columns:230px minmax(0,1fr);
+  min-height:100vh;
+}
+
+.sidebar{
+  background:#172033;
+  color:#fff;
+  padding:22px 15px;
+}
+
+.brand{
+  font-size:17px;
+  font-weight:750;
+  margin-bottom:4px;
+}
+
+.brand-sub{
+  font-size:11px;
+  color:#98a2b3;
+  margin-bottom:28px;
+}
+
+.nav-title{
+  font-size:10px;
+  color:#98a2b3;
+  margin:20px 9px 7px;
+  text-transform:uppercase;
+}
+
+.nav-item{
+  display:block;
+  width:100%;
+  color:#d0d5dd;
+  background:transparent;
+  text-align:left;
+  padding:10px 11px;
+  border-radius:9px;
+  margin-bottom:3px;
+  text-decoration:none;
+  font-size:13px;
+}
+
+.nav-item:hover{
+  background:#263247;
+  color:#fff;
+}
+
+.nav-item.active{
+  background:#2d6cdf;
+  color:#fff;
+  font-weight:650;
+}
+
+.main{min-width:0}
+
+.topbar{
+  height:64px;
+  background:#fff;
+  border-bottom:1px solid #e5e9f0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+}
+
+.topbar-title{font-weight:700}
+
+.user{
+  font-size:12px;
+  color:#667085;
+}
+
+.content{
+  max-width:1500px;
+  margin:auto;
+  padding:26px 28px 50px;
+}
+
+/* ======================================================
+   Page head
+====================================================== */
+
+.page-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  margin-bottom:20px;
+}
+
+.page-head h1{
+  margin:0 0 5px;
+  font-size:25px;
+}
+
+.cycle-select{
+  min-width:280px;
+  border:1px solid #d0d5dd;
+  border-radius:9px;
+  padding:9px 11px;
+  background:#fff;
+}
+
+/* ======================================================
+   Summary
+====================================================== */
+
+.summary{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.summary-card{
+  background:#fff;
+  border:1px solid #e4e8ef;
+  border-radius:13px;
+  padding:15px;
+}
+
+.summary-label{
+  font-size:11px;
+  color:#667085;
+}
+
+.summary-value{
+  font-size:24px;
+  font-weight:750;
+  margin-top:5px;
+}
+
+.summary-sub{
+  margin-top:4px;
+  font-size:11px;
+  color:#98a2b3;
+}
+
+/* ======================================================
+   Panel
+====================================================== */
+
+.panel{
+  background:#fff;
+  border:1px solid #e4e8ef;
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+
+.panel-head{
+  padding:15px 18px;
+  border-bottom:1px solid #e9edf3;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.panel-title{
+  font-weight:700;
+}
+
+.panel-body{
+  padding:18px;
+}
+
+/* ======================================================
+   28 day overview
+====================================================== */
+
+.day-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:7px;
+}
+
+.day-card{
+  min-height:86px;
+  background:#fff;
+  border:1px solid #e1e6ee;
+  border-radius:10px;
+  padding:9px;
+  cursor:pointer;
+  transition:.12s;
+}
+
+.day-card:hover{
+  border-color:#98b8ef;
+  background:#f8fbff;
+}
+
+.day-card.selected{
+  border:2px solid #1769e0;
+  padding:8px;
+  background:#f3f7ff;
+}
+
+.day-card.busy{
+  background:#fff8f0;
+}
+
+.day-card.very-busy{
+  background:#fff1f0;
+  border-color:#fecdca;
+}
+
+.day-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:5px;
+}
+
+.day-date{
+  font-size:12px;
+  font-weight:700;
+}
+
+.day-week{
+  font-size:10px;
+  color:#98a2b3;
+}
+
+.day-count{
+  margin-top:10px;
+  font-size:21px;
+  font-weight:750;
+}
+
+.day-count-label{
+  font-size:10px;
+  color:#667085;
+}
+
+.day-points{
+  margin-top:5px;
+  font-size:10px;
+  color:#667085;
+}
+
+/* ======================================================
+   Tabs
+====================================================== */
+
+.tabs{
+  display:flex;
+  gap:4px;
+  background:#f2f4f7;
+  padding:4px;
+  border-radius:10px;
+}
+
+.tab{
+  background:transparent;
+  padding:7px 12px;
+  font-size:12px;
+}
+
+.tab.active{
+  background:#fff;
+  box-shadow:0 1px 3px #0001;
+  font-weight:700;
+}
+
+/* ======================================================
+   Table
+====================================================== */
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+th{
+  background:#f8fafc;
+  color:#667085;
+  font-size:11px;
+  font-weight:650;
+  text-align:left;
+  padding:11px 13px;
+  border-bottom:1px solid #e4e8ef;
+  white-space:nowrap;
+}
+
+td{
+  padding:12px 13px;
+  border-bottom:1px solid #edf0f4;
+  font-size:13px;
+  vertical-align:middle;
+}
+
+tbody tr:hover{
+  background:#fafcff;
+}
+
+tbody tr:last-child td{
+  border-bottom:0;
+}
+
+.name{
+  font-weight:700;
+}
+
+.employee-id{
+  font-size:11px;
+  color:#98a2b3;
+  margin-top:2px;
+}
+
+.shift{
+  display:inline-flex;
+  width:27px;
+  height:27px;
+  align-items:center;
+  justify-content:center;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.shift.A{
+  background:#fff5cc;
+  color:#805b00;
+}
+
+.shift.E{
+  background:#dff5e5;
+  color:#176b35;
+}
+
+.shift.N{
+  background:#e7e8ff;
+  color:#4044a7;
+}
+
+.shift.none{
+  background:#f2f4f7;
+  color:#98a2b3;
+}
+
+.points{
+  font-weight:750;
+}
+
+.special{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  background:#f4ebff;
+  color:#6941c6;
+}
+
+.general{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:11px;
+  background:#eef4ff;
+  color:#3538cd;
+}
+
+.confirmed{
+  color:#16763a;
+  font-size:12px;
+}
+
+.draft{
+  color:#b54708;
+  font-size:12px;
+}
+
+/* ======================================================
+   Person view
+====================================================== */
+
+.person-layout{
+  display:grid;
+  grid-template-columns:300px minmax(0,1fr);
+  min-height:470px;
+}
+
+.person-list{
+  border-right:1px solid #e9edf3;
+}
+
+.person-search-wrap{
+  padding:12px;
+  border-bottom:1px solid #e9edf3;
+}
+
+.person-search{
+  width:100%;
+  border:1px solid #d0d5dd;
+  border-radius:9px;
+  padding:9px 10px;
+}
+
+.person-items{
+  max-height:520px;
+  overflow:auto;
+}
+
+.person-item{
+  padding:11px 13px;
+  border-bottom:1px solid #edf0f4;
+  cursor:pointer;
+}
+
+.person-item:hover{
+  background:#f8fafc;
+}
+
+.person-item.active{
+  background:#eef4ff;
+}
+
+.person-item-name{
+  font-weight:700;
+  font-size:13px;
+}
+
+.person-item-meta{
+  margin-top:3px;
+  color:#667085;
+  font-size:11px;
+}
+
+.person-detail{
+  padding:20px;
+}
+
+.person-detail-head{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  align-items:flex-start;
+  margin-bottom:18px;
+}
+
+.person-detail-name{
+  font-size:21px;
+  font-weight:750;
+}
+
+.person-detail-meta{
+  margin-top:5px;
+  font-size:12px;
+  color:#667085;
+}
+
+.point-box{
+  text-align:right;
+}
+
+.point-total{
+  font-size:20px;
+  font-weight:750;
+}
+
+.point-ok{
+  color:#16763a;
+}
+
+.point-over{
+  color:#b42318;
+}
+
+.warning{
+  margin-top:12px;
+  background:#fef3f2;
+  border:1px solid #fecdca;
+  color:#b42318;
+  padding:10px 12px;
+  border-radius:9px;
+  font-size:12px;
+}
+
+.request-list{
+  border:1px solid #e4e8ef;
+  border-radius:11px;
+  overflow:hidden;
+}
+
+.request-row{
+  display:grid;
+  grid-template-columns:120px 70px 110px 100px 1fr;
+  gap:10px;
+  align-items:center;
+  padding:11px 13px;
+  border-bottom:1px solid #edf0f4;
+  font-size:12px;
+}
+
+.request-row:last-child{
+  border-bottom:0;
+}
+
+.request-row.header{
+  background:#f8fafc;
+  color:#667085;
+  font-size:10px;
+  font-weight:700;
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:#98a2b3;
+}
+
+/* ======================================================
+   Responsive basic
+====================================================== */
+
+@media(max-width:900px){
+
+  .layout{display:block}
+  .sidebar{display:none}
+
+  .topbar{
+    padding:0 14px;
+  }
+
+  .content{
+    padding:16px 12px 40px;
+  }
+
+  .page-head{
+    display:block;
+  }
+
+  .cycle-select{
+    width:100%;
+    margin-top:12px;
+  }
+
+  .summary{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .day-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .person-layout{
+    display:block;
+  }
+
+  .person-list{
+    border-right:0;
+    border-bottom:1px solid #e9edf3;
+  }
+
+  .person-items{
+    max-height:220px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- ======================================================
+     Sidebar
+====================================================== -->
+
+<aside class="sidebar">
+
+  <div class="brand">
+    Nurse Scheduling
+  </div>
+
+  <div class="brand-sub">
+    排班管理系統
+  </div>
+
+  <div class="nav-title">
+    管理
+  </div>
+
+  <a class="nav-item" href="../admin.html">
+    🏠　管理首頁
+  </a>
+
+  <a class="nav-item" href="cycles.html">
+    📅　四週期管理
+  </a>
+
+  <a class="nav-item" href="staff.html">
+    👥　人員管理
+  </a>
+
+  <a class="nav-item active" href="requests.html">
+    📊　預假資料
+  </a>
+
+  <div class="nav-title">
+    系統
+  </div>
+
+  <a class="nav-item" href="javascript:void(0)">
+    🏷️　特殊日期
+  </a>
+
+  <a class="nav-item" href="javascript:void(0)">
+    🛌　特殊假別
+  </a>
+
+</aside>
+
+
+<!-- ======================================================
+     Main
+====================================================== -->
+
+<main class="main">
+
+  <div class="topbar">
+
+    <div class="topbar-title">
+      預假資料
+    </div>
+
+    <div class="user">
+      Scheduler · 王小明
+    </div>
+
+  </div>
+
+
+  <div class="content">
+
+    <div class="page-head">
+
+      <div>
+
+        <h1>
+          預假資料
+        </h1>
+
+        <div class="muted">
+          查看四週期內的預假分布、點數與填寫狀態
+        </div>
+
+      </div>
+
+
+      <select
+        id="cycleSelect"
+        class="cycle-select"
+        onchange="changeCycle()">
+
+        <option value="1">
+          2026 第1週期｜11/23 ～ 12/20
+        </option>
+
+        <option value="2">
+          2026 第2週期｜12/21 ～ 01/17
+        </option>
+
+        <option value="3">
+          2027 第1週期｜01/18 ～ 02/14
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- ==================================================
+         Summary
+    =================================================== -->
+
+    <div class="summary">
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          人員總數
+        </div>
+
+        <div class="summary-value">
+          150
+        </div>
+
+        <div class="summary-sub">
+          本週期應填人員
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          已確認
+        </div>
+
+        <div
+          id="confirmedCount"
+          class="summary-value">
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          草稿
+        </div>
+
+        <div
+          id="draftCount"
+          class="summary-value">
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          未填
+        </div>
+
+        <div
+          id="notStartedCount"
+          class="summary-value">
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div class="summary-label">
+          預假人次
+        </div>
+
+        <div
+          id="requestCount"
+          class="summary-value">
+        </div>
+
+        <div class="summary-sub">
+          含一般與特殊預假
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         Daily overview
+    =================================================== -->
+
+    <div class="panel">
+
+      <div class="panel-head">
+
+        <div>
+
+          <div class="panel-title">
+            28 天預假分布
+          </div>
+
+          <div class="muted">
+            點日期可直接查看當天預假名單
+          </div>
+
+        </div>
+
+        <div class="muted">
+          顏色較深＝預假人數較多
+        </div>
+
+      </div>
+
+
+      <div class="panel-body">
+
+        <div
+          id="dayGrid"
+          class="day-grid">
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         Details
+    =================================================== -->
+
+    <div class="panel">
+
+      <div class="panel-head">
+
+        <div>
+
+          <div
+            id="detailTitle"
+            class="panel-title">
+            預假明細
+          </div>
+
+          <div
+            id="detailSubtitle"
+            class="muted">
+          </div>
+
+        </div>
+
+
+        <div class="tabs">
+
+          <button
+            id="dateTab"
+            class="tab active"
+            onclick="switchView('date')">
+            依日期
+          </button>
+
+          <button
+            id="personTab"
+            class="tab"
+            onclick="switchView('person')">
+            依人員
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div id="dateView">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>姓名</th>
+                <th>班別</th>
+                <th>點數</th>
+                <th>類型</th>
+                <th>填寫狀態</th>
+                <th>備註</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="dateTable">
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="personView"
+        style="display:none">
+
+        <div class="person-layout">
+
+          <div class="person-list">
+
+            <div class="person-search-wrap">
+
+              <input
+                id="personSearch"
+                class="person-search"
+                placeholder="搜尋姓名或員編…"
+                oninput="renderPersonList()">
+
+            </div>
+
+            <div
+              id="personItems"
+              class="person-items">
+            </div>
+
+          </div>
+
+
+          <div
+            id="personDetail"
+            class="person-detail">
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* ======================================================
+   Cycle prototype data
+====================================================== */
+
+const cycles={
+
+  1:{
+    id:1,
+    name:"2026 第1週期",
+    start:"2026-11-23",
+    end:"2026-12-20",
+    pointLimit:9,
+    confirmed:118,
+    draft:21,
+    notStarted:11
+  },
+
+  2:{
+    id:2,
+    name:"2026 第2週期",
+    start:"2026-12-21",
+    end:"2027-01-17",
+    pointLimit:9,
+    confirmed:96,
+    draft:32,
+    notStarted:22
+  },
+
+  3:{
+    id:3,
+    name:"2027 第1週期",
+    start:"2027-01-18",
+    end:"2027-02-14",
+    pointLimit:12,
+    confirmed:45,
+    draft:37,
+    notStarted:68
+  }
+
+};
+
+
+/* ======================================================
+   Prototype staff
+====================================================== */
+
+const people=[
+
+  {
+    id:1,
+    employeeId:"N0001",
+    name:"王小明",
+    status:"confirmed"
+  },
+
+  {
+    id:2,
+    employeeId:"N0002",
+    name:"陳怡君",
+    status:"confirmed"
+  },
+
+  {
+    id:3,
+    employeeId:"N0003",
+    name:"林志豪",
+    status:"draft"
+  },
+
+  {
+    id:4,
+    employeeId:"N0004",
+    name:"張雅婷",
+    status:"confirmed"
+  },
+
+  {
+    id:5,
+    employeeId:"N0005",
+    name:"李佳穎",
+    status:"confirmed"
+  },
+
+  {
+    id:6,
+    employeeId:"N0006",
+    name:"黃冠宇",
+    status:"draft"
+  },
+
+  {
+    id:7,
+    employeeId:"N0007",
+    name:"蔡佩珊",
+    status:"confirmed"
+  },
+
+  {
+    id:8,
+    employeeId:"N0008",
+    name:"吳宗翰",
+    status:"confirmed"
+  },
+
+  {
+    id:9,
+    employeeId:"N0009",
+    name:"許庭瑜",
+    status:"confirmed"
+  },
+
+  {
+    id:10,
+    employeeId:"N0010",
+    name:"鄭凱文",
+    status:"draft"
+  }
+
+];
+
+
+/* ======================================================
+   Monthly shifts
+   A/E/N 是「月份」資料，不是 cycle 資料
+====================================================== */
+
+const monthlyShifts={
+
+  1:{
+    "2026-11":"A",
+    "2026-12":"E",
+    "2027-01":"N"
+  },
+
+  2:{
+    "2026-11":"E",
+    "2026-12":"E",
+    "2027-01":"N"
+  },
+
+  3:{
+    "2026-11":"N",
+    "2026-12":"N",
+    "2027-01":"A"
+  },
+
+  4:{
+    "2026-11":"A",
+    "2026-12":"A",
+    "2027-01":"E"
+  },
+
+  5:{
+    "2026-11":"E",
+    "2026-12":"E",
+    "2027-01":"E"
+  },
+
+  6:{
+    "2026-11":"N",
+    "2026-12":"N",
+    "2027-01":"N"
+  },
+
+  7:{
+    "2026-11":"A",
+    "2026-12":"E",
+    "2027-01":"N"
+  },
+
+  8:{
+    "2026-11":"E",
+    "2026-12":"A",
+    "2027-01":"A"
+  },
+
+  9:{
+    "2026-11":"N",
+    "2026-12":"E",
+    "2027-01":"E"
+  },
+
+  10:{
+    "2026-11":"A",
+    "2026-12":"N",
+    "2027-01":"N"
+  }
+
+};
+
+
+/* ======================================================
+   Prototype leave requests
+====================================================== */
+
+const requests=[
+
+  {
+    personId:1,
+    cycleId:1,
+    date:"2026-11-28",
+    type:"general",
+    points:3,
+    note:"家庭活動"
+  },
+
+  {
+    personId:1,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:9,
+    note:""
+  },
+
+  {
+    personId:1,
+    cycleId:1,
+    date:"2026-12-08",
+    type:"general",
+    points:0,
+    note:"有排到最好"
+  },
+
+  {
+    personId:1,
+    cycleId:1,
+    date:"2026-12-14",
+    type:"special",
+    specialType:"年休週",
+    points:null,
+    note:""
+  },
+
+  {
+    personId:2,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:7,
+    note:""
+  },
+
+  {
+    personId:3,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:5,
+    note:""
+  },
+
+  {
+    personId:4,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"special",
+    specialType:"年休週",
+    points:null,
+    note:""
+  },
+
+  {
+    personId:5,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:2,
+    note:""
+  },
+
+  {
+    personId:6,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:0,
+    note:""
+  },
+
+  {
+    personId:7,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:9,
+    note:"重要行程"
+  },
+
+  {
+    personId:8,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:4,
+    note:""
+  },
+
+  {
+    personId:9,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:6,
+    note:""
+  },
+
+  {
+    personId:10,
+    cycleId:1,
+    date:"2026-12-05",
+    type:"general",
+    points:1,
+    note:""
+  },
+
+  {
+    personId:2,
+    cycleId:1,
+    date:"2026-12-12",
+    type:"general",
+    points:2,
+    note:""
+  },
+
+  {
+    personId:3,
+    cycleId:1,
+    date:"2026-12-12",
+    type:"general",
+    points:4,
+    note:""
+  },
+
+  {
+    personId:5,
+    cycleId:1,
+    date:"2026-12-12",
+    type:"general",
+    points:3,
+    note:""
+  },
+
+  {
+    personId:8,
+    cycleId:1,
+    date:"2026-12-12",
+    type:"special",
+    specialType:"公假",
+    points:null,
+    note:"院內課程"
+  },
+
+  {
+    personId:9,
+    cycleId:1,
+    date:"2026-12-12",
+    type:"general",
+    points:5,
+    note:""
+  },
+
+  {
+    personId:4,
+    cycleId:1,
+    date:"2026-11-30",
+    type:"general",
+    points:1,
+    note:""
+  },
+
+  {
+    personId:7,
+    cycleId:1,
+    date:"2026-11-30",
+    type:"general",
+    points:3,
+    note:""
+  },
+
+  {
+    personId:10,
+    cycleId:1,
+    date:"2026-12-18",
+    type:"general",
+    points:4,
+    note:""
+  },
+
+  /* Cycle 2 sample */
+
+  {
+    personId:1,
+    cycleId:2,
+    date:"2026-12-25",
+    type:"general",
+    points:9,
+    note:""
+  },
+
+  {
+    personId:2,
+    cycleId:2,
+    date:"2026-12-25",
+    type:"general",
+    points:8,
+    note:""
+  },
+
+  {
+    personId:3,
+    cycleId:2,
+    date:"2026-12-31",
+    type:"general",
+    points:5,
+    note:""
+  },
+
+  {
+    personId:4,
+    cycleId:2,
+    date:"2027-01-01",
+    type:"special",
+    specialType:"年休週",
+    points:null,
+    note:""
+  },
+
+  {
+    personId:5,
+    cycleId:2,
+    date:"2027-01-09",
+    type:"general",
+    points:4,
+    note:""
+  },
+
+  /* Cycle 3 sample */
+
+  {
+    personId:1,
+    cycleId:3,
+    date:"2027-01-23",
+    type:"general",
+    points:12,
+    note:""
+  },
+
+  {
+    personId:2,
+    cycleId:3,
+    date:"2027-01-23",
+    type:"general",
+    points:9,
+    note:""
+  },
+
+  {
+    personId:7,
+    cycleId:3,
+    date:"2027-02-06",
+    type:"special",
+    specialType:"婚假",
+    points:null,
+    note:""
+  }
+
+];
+
+
+/* ======================================================
+   State
+====================================================== */
+
+let currentCycleId=1;
+let selectedDate="2026-12-05";
+let currentView="date";
+let selectedPersonId=1;
+
+
+/* ======================================================
+   Date helpers
+====================================================== */
+
+function parseDate(key){
+
+  const [y,m,d]=key
+    .split("-")
+    .map(Number);
+
+  return new Date(y,m-1,d);
+}
+
+
+function dateKey(date){
+
+  const y=date.getFullYear();
+
+  const m=String(
+    date.getMonth()+1
+  ).padStart(2,"0");
+
+  const d=String(
+    date.getDate()
+  ).padStart(2,"0");
+
+  return `${y}-${m}-${d}`;
+}
+
+
+function addDays(date,days){
+
+  const result=
+    new Date(date);
+
+  result.setDate(
+    result.getDate()+days
+  );
+
+  return result;
+}
+
+
+function monthKey(date){
+
+  return date.slice(0,7);
+}
+
+
+function shortDate(key){
+
+  const d=parseDate(key);
+
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+
+function displayDate(key){
+
+  const d=parseDate(key);
+
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+}
+
+
+function weekday(key){
+
+  const labels=[
+    "日","一","二","三","四","五","六"
+  ];
+
+  return labels[
+    parseDate(key).getDay()
+  ];
+}
+
+
+/* ======================================================
+   Data helpers
+====================================================== */
+
+function getCurrentCycle(){
+
+  return cycles[
+    currentCycleId
+  ];
+}
+
+
+function getPerson(id){
+
+  return people.find(
+    p=>p.id===id
+  );
+}
+
+
+function getShift(
+  personId,
+  date
+){
+
+  const month=
+    monthKey(date);
+
+  return (
+    monthlyShifts[personId]
+    &&
+    monthlyShifts[personId][month]
+  )
+  || null;
+}
+
+
+function cycleRequests(){
+
+  return requests.filter(
+    r=>
+      r.cycleId===
+      currentCycleId
+  );
+}
+
+
+function requestsForDate(date){
+
+  return cycleRequests()
+    .filter(
+      r=>r.date===date
+    )
+    .sort(
+      (a,b)=>{
+
+        /*
+          特殊假先視為必要資料，
+          一般預假依點數高到低。
+        */
+
+        if(
+          a.type==="special"
+          &&
+          b.type!=="special"
+        ){
+          return -1;
+        }
+
+        if(
+          b.type==="special"
+          &&
+          a.type!=="special"
+        ){
+          return 1;
+        }
+
+        return (
+          (b.points ?? 999)
+          -
+          (a.points ?? 999)
+        );
+      }
+    );
+}
+
+
+function requestsForPerson(
+  personId
+){
+
+  return cycleRequests()
+    .filter(
+      r=>r.personId===personId
+    )
+    .sort(
+      (a,b)=>
+        a.date.localeCompare(
+          b.date
+        )
+    );
+}
+
+
+/* ======================================================
+   Main render
+====================================================== */
+
+function render(){
+
+  const cycle=
+    getCurrentCycle();
+
+
+  document
+    .getElementById(
+      "confirmedCount"
+    )
+    .textContent=
+      cycle.confirmed;
+
+
+  document
+    .getElementById(
+      "draftCount"
+    )
+    .textContent=
+      cycle.draft;
+
+
+  document
+    .getElementById(
+      "notStartedCount"
+    )
+    .textContent=
+      cycle.notStarted;
+
+
+  document
+    .getElementById(
+      "requestCount"
+    )
+    .textContent=
+      cycleRequests().length;
+
+
+  renderDayGrid();
+
+
+  if(currentView==="date"){
+
+    renderDateView();
+
+  }else{
+
+    renderPersonList();
+    renderPersonDetail();
+  }
+}
+
+
+/* ======================================================
+   Change cycle
+====================================================== */
+
+function changeCycle(){
+
+  currentCycleId=
+    Number(
+      document
+      .getElementById(
+        "cycleSelect"
+      )
+      .value
+    );
+
+
+  const cycle=
+    getCurrentCycle();
+
+
+  /*
+    切週期後：
+    預設選第一個有預假資料的日期。
+  */
+
+  const firstRequest=
+    cycleRequests()
+    .sort(
+      (a,b)=>
+        a.date.localeCompare(
+          b.date
+        )
+    )[0];
+
+
+  selectedDate=
+    firstRequest
+      ? firstRequest.date
+      : cycle.start;
+
+
+  render();
+}
+
+
+/* ======================================================
+   Day grid
+====================================================== */
+
+function renderDayGrid(){
+
+  const grid=
+    document
+    .getElementById(
+      "dayGrid"
+    );
+
+
+  const cycle=
+    getCurrentCycle();
+
+
+  const start=
+    parseDate(
+      cycle.start
+    );
+
+
+  let html="";
+
+
+  for(
+    let i=0;
+    i<28;
+    i++
+  ){
+
+    const date=
+      dateKey(
+        addDays(start,i)
+      );
+
+
+    const dayRequests=
+      requestsForDate(date);
+
+
+    const count=
+      dayRequests.length;
+
+
+    const general=
+      dayRequests.filter(
+        r=>r.type==="general"
+      );
+
+
+    const totalPoints=
+      general.reduce(
+        (sum,r)=>
+          sum+(r.points||0),
+        0
+      );
+
+
+    let busyClass="";
+
+
+    if(count>=8){
+
+      busyClass="very-busy";
+
+    }else if(count>=4){
+
+      busyClass="busy";
+    }
+
+
+    const selected=
+      date===selectedDate
+      ? "selected"
+      : "";
+
+
+    html+=`
+
+      <div
+        class="day-card ${busyClass} ${selected}"
+        onclick="selectDate('${date}')">
+
+        <div class="day-top">
+
+          <div class="day-date">
+            ${shortDate(date)}
+          </div>
+
+          <div class="day-week">
+            週${weekday(date)}
+          </div>
+
+        </div>
+
+
+        <div class="day-count">
+          ${count}
+        </div>
+
+        <div class="day-count-label">
+          人預假
+        </div>
+
+        <div class="day-points">
+          一般預假 ${totalPoints} 點
+        </div>
+
+      </div>
+
+    `;
+  }
+
+
+  grid.innerHTML=html;
+}
+
+
+function selectDate(date){
+
+  selectedDate=date;
+
+
+  /*
+    點日期時自動切回「依日期」，
+    這樣操作比較直覺。
+  */
+
+  if(currentView!=="date"){
+
+    switchView(
+      "date",
+      false
+    );
+  }
+
+
+  render();
+}
+
+
+/* ======================================================
+   View switch
+====================================================== */
+
+function switchView(
+  view,
+  rerender=true
+){
+
+  currentView=view;
+
+
+  document
+    .getElementById("dateTab")
+    .classList
+    .toggle(
+      "active",
+      view==="date"
+    );
+
+
+  document
+    .getElementById("personTab")
+    .classList
+    .toggle(
+      "active",
+      view==="person"
+    );
+
+
+  document
+    .getElementById("dateView")
+    .style.display=
+      view==="date"
+      ? "block"
+      : "none";
+
+
+  document
+    .getElementById("personView")
+    .style.display=
+      view==="person"
+      ? "block"
+      : "none";
+
+
+  if(rerender){
+    render();
+  }
+}
+
+
+/* ======================================================
+   Date view
+====================================================== */
+
+function renderDateView(){
+
+  const list=
+    requestsForDate(
+      selectedDate
+    );
+
+
+  document
+    .getElementById(
+      "detailTitle"
+    )
+    .textContent=
+      `${displayDate(selectedDate)}（${weekday(selectedDate)}）`;
+
+
+  document
+    .getElementById(
+      "detailSubtitle"
+    )
+    .textContent=
+      `共 ${list.length} 人預假`;
+
+
+  const body=
+    document
+    .getElementById(
+      "dateTable"
+    );
+
+
+  if(!list.length){
+
+    body.innerHTML=`
+
+      <tr>
+
+        <td colspan="6">
+
+          <div class="empty">
+            這一天目前沒有預假資料
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+  }
+
+
+  body.innerHTML=
+    list.map(
+      request=>{
+
+        const person=
+          getPerson(
+            request.personId
+          );
+
+
+        const shift=
+          getShift(
+            request.personId,
+            request.date
+          );
+
+
+        const pointDisplay=
+          request.type==="general"
+          ? `${request.points} ⭐`
+          : "—";
+
+
+        const typeDisplay=
+          request.type==="general"
+          ? `
+            <span class="general">
+              一般預假
+            </span>
+          `
+          : `
+            <span class="special">
+              ${escapeHtml(request.specialType)}
+            </span>
+          `;
+
+
+        const statusDisplay=
+          person.status==="confirmed"
+          ? `
+            <span class="confirmed">
+              ✓ 已確認
+            </span>
+          `
+          : `
+            <span class="draft">
+              ● 草稿
+            </span>
+          `;
+
+
+        return `
+
+          <tr>
+
+            <td>
+
+              <div class="name">
+                ${escapeHtml(person.name)}
+              </div>
+
+              <div class="employee-id">
+                ${escapeHtml(person.employeeId)}
+              </div>
+
+            </td>
+
+
+            <td>
+
+              ${
+                shift
+                ? `
+                  <span class="shift ${shift}">
+                    ${shift}
+                  </span>
+                `
+                : `
+                  <span class="shift none">
+                    —
+                  </span>
+                `
+              }
+
+            </td>
+
+
+            <td class="points">
+              ${pointDisplay}
+            </td>
+
+
+            <td>
+              ${typeDisplay}
+            </td>
+
+
+            <td>
+              ${statusDisplay}
+            </td>
+
+
+            <td>
+              ${escapeHtml(request.note || "—")}
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    )
+    .join("");
+}
+
+
+/* ======================================================
+   Person list
+====================================================== */
+
+function renderPersonList(){
+
+  const search=
+    document
+    .getElementById(
+      "personSearch"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+
+  const filtered=
+    people.filter(
+      person=>
+
+        !search
+
+        ||
+
+        person.name
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        person.employeeId
+          .toLowerCase()
+          .includes(search)
+    );
+
+
+  const box=
+    document
+    .getElementById(
+      "personItems"
+    );
+
+
+  box.innerHTML=
+    filtered.map(
+      person=>{
+
+        const list=
+          requestsForPerson(
+            person.id
+          );
+
+
+        const points=
+          list
+          .filter(
+            r=>r.type==="general"
+          )
+          .reduce(
+            (sum,r)=>
+              sum+(r.points||0),
+            0
+          );
+
+
+        return `
+
+          <div
+            class="person-item ${person.id===selectedPersonId ? "active" : ""}"
+            onclick="selectPerson(${person.id})">
+
+            <div class="person-item-name">
+              ${escapeHtml(person.name)}
+            </div>
+
+            <div class="person-item-meta">
+
+              ${escapeHtml(person.employeeId)}
+              ・
+              ${list.length} 筆
+              ・
+              ${points} 點
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+    .join("");
+}
+
+
+function selectPerson(id){
+
+  selectedPersonId=id;
+
+  renderPersonList();
+  renderPersonDetail();
+}
+
+
+/* ======================================================
+   Person detail
+====================================================== */
+
+function renderPersonDetail(){
+
+  const person=
+    getPerson(
+      selectedPersonId
+    );
+
+
+  const box=
+    document
+    .getElementById(
+      "personDetail"
+    );
+
+
+  if(!person){
+
+    box.innerHTML=`
+      <div class="empty">
+        請選擇人員
+      </div>
+    `;
+
+    return;
+  }
+
+
+  const cycle=
+    getCurrentCycle();
+
+
+  const list=
+    requestsForPerson(
+      person.id
+    );
+
+
+  const usedPoints=
+    list
+    .filter(
+      r=>r.type==="general"
+    )
+    .reduce(
+      (sum,r)=>
+        sum+(r.points||0),
+      0
+    );
+
+
+  const over=
+    usedPoints>
+    cycle.pointLimit;
+
+
+  document
+    .getElementById(
+      "detailTitle"
+    )
+    .textContent=
+      "依人員查看";
+
+
+  document
+    .getElementById(
+      "detailSubtitle"
+    )
+    .textContent=
+      `${cycle.name}｜點數額度 ${cycle.pointLimit}`;
+
+
+  let rows="";
+
+
+  if(list.length){
+
+    rows=`
+
+      <div class="request-row header">
+
+        <div>日期</div>
+        <div>班別</div>
+        <div>類型</div>
+        <div>點數</div>
+        <div>備註</div>
+
+      </div>
+
+
+      ${
+        list.map(
+          request=>{
+
+            const shift=
+              getShift(
+                person.id,
+                request.date
+              );
+
+
+            return `
+
+              <div class="request-row">
+
+                <div>
+                  ${displayDate(request.date)}
+                </div>
+
+
+                <div>
+
+                  ${
+                    shift
+                    ? `
+                      <span class="shift ${shift}">
+                        ${shift}
+                      </span>
+                    `
+                    : `
+                      <span class="shift none">
+                        —
+                      </span>
+                    `
+                  }
+
+                </div>
+
+
+                <div>
+
+                  ${
+                    request.type==="general"
+                    ? `
+                      <span class="general">
+                        一般預假
+                      </span>
+                    `
+                    : `
+                      <span class="special">
+                        ${escapeHtml(request.specialType)}
+                      </span>
+                    `
+                  }
+
+                </div>
+
+
+                <div class="points">
+
+                  ${
+                    request.type==="general"
+                    ? `${request.points} ⭐`
+                    : "—"
+                  }
+
+                </div>
+
+
+                <div>
+                  ${escapeHtml(request.note || "—")}
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("")
+      }
+
+    `;
+
+  }else{
+
+    rows=`
+
+      <div class="empty">
+        此人本週期沒有預假資料
+      </div>
+
+    `;
+  }
+
+
+  box.innerHTML=`
+
+    <div class="person-detail-head">
+
+      <div>
+
+        <div class="person-detail-name">
+          ${escapeHtml(person.name)}
+        </div>
+
+        <div class="person-detail-meta">
+
+          ${escapeHtml(person.employeeId)}
+          ・
+
+          ${
+            person.status==="confirmed"
+            ? "✓ 已確認"
+            : "● 草稿"
+          }
+
+        </div>
+
+      </div>
+
+
+      <div class="point-box">
+
+        <div class="muted">
+          一般預假點數
+        </div>
+
+        <div class="point-total ${over ? "point-over" : "point-ok"}">
+
+          ${usedPoints}
+          /
+          ${cycle.pointLimit}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    ${
+      over
+      ? `
+        <div class="warning">
+          ⚠ 此人的一般預假點數已超過本週期額度。
+        </div>
+      `
+      : ""
+    }
+
+
+    <div
+      class="request-list"
+      style="margin-top:16px">
+
+      ${rows}
+
+    </div>
+
+  `;
+}
+
+
+/* ======================================================
+   Escape
+====================================================== */
+
+function escapeHtml(text=""){
+
+  return String(text)
+    .replace(
+      /[&<>'"]/g,
+      char=>({
+
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        "'":"&#39;",
+        '"':"&quot;"
+
+      }[char])
+    );
+}
+
+
+/* ======================================================
+   Start
+====================================================== */
+
+render();
+
+</script>
+
+</body>
+</html>
